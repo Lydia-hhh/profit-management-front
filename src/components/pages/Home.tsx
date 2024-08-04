@@ -2,6 +2,8 @@ import { useDispatch } from "react-redux";
 import { diagramAll } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect } from "react";
+import DiagramAll from "../layouts/DiagramAll";
+import Portfolio from "./Portfolio";
 
 function Home(){
     const dispatch=useDispatch();
@@ -9,16 +11,14 @@ function Home(){
         const portfolio_id=1;
         const time_range="5d";
         dispatch(diagramAll({portfolio_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
-            console.log("result: "+res)
         })
     }
     useEffect(() => {
-        test()
+        // test()
     })
     return(
         <div>
-
-
+            <Portfolio/>
         </div>
     );
 }
