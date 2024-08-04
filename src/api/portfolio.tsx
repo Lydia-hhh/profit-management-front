@@ -1,0 +1,10 @@
+export const PORTFOLIO_LIST="/portfolio/list";
+export const PORTFOLIO="/portfolio";
+export const PRODUCTS="/products";
+export const PRODUCTS_SEARCH="/products/search";
+export const DIAGRAM_ALL="/diagram/all";
+export const DIAGRAM_PROFIT="/diagram/profit";
+export const DIAGRAM_SINGLE="/diagram/single";
+export const DIAGRAM_DISTRIBUTION="/diagram/distribution";
+export const DIAGRAM_NAME="/products/name";
+export const PRODUCTS_INFO="/products/info";
