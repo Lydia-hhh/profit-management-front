@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Tabs, TabsProps } from "antd";
+import { Button, Form, FormProps, Input, Modal, Tabs, TabsProps } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";

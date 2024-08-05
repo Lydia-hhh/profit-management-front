@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import service from './../../service';
+import { RootState } from "..";
 const initialState={
     user:'user1'
 };
@@ -39,7 +40,6 @@ export const portfolioList=createAsyncThunk("portfolio/portfolioList",async()=>{
         alert("server error, please contact developer")
     }
 })
-
 export const portfolioPost=createAsyncThunk("portfolio/portfolioPost",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Portfolio_Post(userInput);
@@ -69,7 +69,12 @@ export const productNews=createAsyncThunk("products/news",async(userInput:any)=>
 export const recordList=createAsyncThunk("portfolio/recordList",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Record_List(userInput);
-
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
 /*fuzzy search*/
 export const fuzzySearchList=createAsyncThunk("portfolio/fuzzySearchList",
     async(userInput:any)=>{
@@ -85,11 +90,12 @@ export const fuzzySearchList=createAsyncThunk("portfolio/fuzzySearchList",
 export const recordDelete=createAsyncThunk("portfolio/recordDelete",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Record_Delete(userInput);
-
-        return []
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
     }
 })
-
 /*get Info*/
 export const productsInfo=createAsyncThunk("portfolio/productsInfo",
     async(userInput:any)=>{
@@ -105,6 +111,9 @@ export const productDelete=createAsyncThunk("portfolio/productDelete",async(user
     try{
         const res=await service.portfolioService.Product_Delete(userInput);
         return []
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
     }
 })
 
@@ -117,7 +126,6 @@ export const addProduct=createAsyncThunk("portfolio/addProduct",
     }catch(err:any){
         console.log(err);
         alert("server error, please contact developer")
-
     }
 })
 export const activity=createAsyncThunk("activity",async(userInput:any)=>{
@@ -129,12 +137,10 @@ export const activity=createAsyncThunk("activity",async(userInput:any)=>{
         alert("server error, please contact developer")
     }
 })
-        return []
-    }
-})
 
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{}
 })
+
 export default portfolioSlice.reducer;
