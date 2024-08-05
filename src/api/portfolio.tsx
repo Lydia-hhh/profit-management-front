@@ -2,6 +2,7 @@ export const PORTFOLIO_LIST="/portfolio/list";
 export const PORTFOLIO="/portfolio";
 export const PRODUCTS="/products";
 export const PRODUCTS_SEARCH="/products/search";
+export const PRODUCTS_DEL="/products_all";
 export const DIAGRAM_ALL="/diagram/all";
 export const DIAGRAM_PROFIT="/diagram/profit";
 export const DIAGRAM_SINGLE="/diagram/single";

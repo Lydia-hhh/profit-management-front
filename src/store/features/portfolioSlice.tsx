@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import service from './../../service';
 import { RootState } from "..";
 const initialState={
-    
+
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -55,6 +55,33 @@ export const productNews=createAsyncThunk("products/news",async(userInput:any)=>
         return res;
     }catch(err:any){
         console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const recordList=createAsyncThunk("portfolio/recordList",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Record_List(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const recordDelete=createAsyncThunk("portfolio/recordDelete",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Record_Delete(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const productDelete=createAsyncThunk("portfolio/productDelete",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Product_Delete(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
         alert("server error, please contact developer")
     }
 })

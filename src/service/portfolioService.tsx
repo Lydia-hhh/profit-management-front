@@ -44,6 +44,40 @@ export function Portfolio_List(){
         })
     })
 }
+
+export function Record_List({portfolio_id}:any){
+    return new Promise((resolve,reject)=>{
+        const url = api.portfolioApi.PORTFOLIO + "/" + portfolio_id
+        request.get(url).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
+
+export function Record_Delete({record_id}:any){
+    return new Promise((resolve,reject)=>{
+        const url = api.portfolioApi.PRODUCTS + "/" + record_id
+        request.delete(url).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
+
+export function Product_Delete({portfolio_id, item_id}:any){
+    return new Promise((resolve,reject)=>{
+        request.delete(api.portfolioApi.PRODUCTS_DEL,{
+            params:{portfolio_id,item_id}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
 export function Portfolio_News({portfolio_id}:any){
     return new Promise((resolve,reject)=>{
         request.get(api.portfolioApi.PORTFOLIO_NEWS,{
