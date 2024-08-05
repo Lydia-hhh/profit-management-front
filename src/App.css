@@ -1,0 +1,29 @@
+.value {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.value.positive {
+    background-color: rgb(252, 232, 230); /* 浅红色背景 */
+    color: rgb(165, 14, 14); /* 红色字体 */
+}
+
+.value.negative {
+    background-color: rgb(230, 244, 234); /* 浅绿色背景 */
+    color: rgb(19, 115, 51); /* 绿色字体 */
+}
+.value.zero {
+    background-color: cornflowerblue; /* 浅绿色背景 */
+    color: black; /* 绿色字体 */
+}
+
+.font.positive{
+    color: rgb(165, 14, 14); /* 红色字体 */
+}
+
+.font.negative{
+    color: rgb(19, 115, 51); /* 绿色字体 */
+}

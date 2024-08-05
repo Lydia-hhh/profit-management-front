@@ -6,7 +6,7 @@ import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import {diagramAll, productDelete, recordDelete, recordList} from "../../store/features/portfolioSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useDispatch} from "react-redux";
-
+import classNames from 'classnames';
 
 function Record({portfolio_id}:any) {
     const dispatch = useDispatch();
@@ -44,7 +44,6 @@ function Record({portfolio_id}:any) {
                 console.log("getRecordList result: ", res)
                 if (res && res.code == 200) {
                     setRecords(res.data);
-                    console.log("test:")
                     console.log(res.data)
                 }
             })
@@ -89,15 +88,49 @@ function Record({portfolio_id}:any) {
         }
     };
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const columns: ColumnsType<Record> = [
         { title: 'Item ID', dataIndex: 'item_id', key: 'item_id' },
         { title: 'Item Name', dataIndex: 'item_name', key: 'item_name' },
         { title: 'Current Price', dataIndex: 'current_price', key: 'current_price' },
-        { title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return' },
-        { title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate' },
+        { title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return' ,
+            render: (text) => (
+                <span className={classNames('value', { positive: text >= 0, negative: text < 0 })}>
+                    {text} {text >= 0 ? '▲' : '▼'}
+                </span>
+            ),},
+        { title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate',
+            render: (text) => {
+                const value = parseFloat(text);
+                return (
+                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
+                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                    </span>
+                );
+            },},
         { title: 'Total Amount', dataIndex: 'total_amount', key: 'total_amount' },
-        { title: 'Total Return', dataIndex: 'total_return', key: 'total_return' },
-        { title: 'Total Return Rate', dataIndex: 'total_return_rate', key: 'total_return_rate' },
+        { title: 'Total Return', dataIndex: 'total_return', key: 'total_return' ,
+            render: (text) => (
+                <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
+                    {text}
+                </span>
+            ),},
+        { title: 'Total Return Rate', dataIndex: 'total_return_rate', key: 'total_return_rate' ,
+            render: (text) => {
+                const value = parseFloat(text);
+                return (
+                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
+                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                    </span>
+                );
+            },},
         { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
         {
             title: 'Actions',
@@ -118,25 +151,41 @@ function Record({portfolio_id}:any) {
     ];
 
     const subColumns: ColumnsType<SubRecord> = [
-        { title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date' },
+        { title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date',
+            render: (text) => (
+                formatDate(text)
+            ),
+        },
         { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' },
         { title: 'Amount', dataIndex: 'amount', key: 'amount' },
-        { title: 'Revenue', dataIndex: 'revenue', key: 'revenue' },
-        { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' },
+        { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
+            render: (text) => (
+                <span className={classNames('value', { positive: text >= 0, negative: text < 0 })}>
+                    {text} {text >= 0 ? '▲' : '▼'}
+                </span>
+            ),},
+        { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
+            render: (text) => {
+                const value = parseFloat(text);
+                return (
+                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
+                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                    </span>
+                );
+            },},
         { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
         {
             title: 'Actions',
             key: 'actions',
             render: (text, subRecord) => (
                 <span>
-          {/*<Button icon={<EditOutlined />} onClick={() => handleEditRecord(subRecord)} />*/}
-          <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
-          >
-            <Button icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </span>
+                  <Popconfirm
+                      title="Sure to delete?"
+                      onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
+                  >
+                    <Button icon={<DeleteOutlined />} />
+                  </Popconfirm>
+                </span>
             )
         }
     ];
