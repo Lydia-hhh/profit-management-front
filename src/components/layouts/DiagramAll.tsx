@@ -19,7 +19,7 @@ function DiagramAll({portfolio_id}:any){
         setdisabled(time_range)
         dispatch(diagramAll({portfolio_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
             setdisabled("all")
-            if(res.code==200){
+            if(res && res.code==200){
                 for(let i=0;i<res.data.length;i++){
                     data.push([Date.parse(res.data[i].time),res.data[i].price])
                 }

@@ -15,7 +15,7 @@ function PieChart({portfolio_id}:any){
         setloading(true)
         dispatch(diagramDistribution({portfolio_id}) as any).then(unwrapResult).then((res:any)=>{
             setloading(false);
-            if(res.code==200){
+            if(res && res.code==200){
                 setData(res.data);
             }
         })

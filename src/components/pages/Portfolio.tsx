@@ -1,4 +1,4 @@
-import { Tabs, TabsProps } from "antd";
+import { Button, Tabs, TabsProps } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
 import { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
@@ -15,7 +15,7 @@ function Portfolio() {
     const getPortfolioList = () => {
         dispatch(portfolioList() as any).then(unwrapResult).then((res: any) => {
             console.log("getPortfolioList result: ", res)
-            if (res.code == 200) {
+            if (res && res.code == 200) {
                 setportfolios(res.data);
             }
         })
@@ -39,6 +39,7 @@ function Portfolio() {
     }, [])
     return (
         <div style={{width:'80%',marginLeft:'10%'}}>
+            <Button type="primary">Create New Portfolio</Button>
              <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
        
