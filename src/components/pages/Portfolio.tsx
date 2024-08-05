@@ -30,7 +30,7 @@ function Portfolio() {
                     <div style={{ height: '50px' }}></div>
                     <DiagramProfit portfolio_id={portfolio.portfolio_id} />
                     <div style={{ height: '50px' }}></div>
-                    <PieChart portfolio_id={portfolio.portfolio_id}/>
+                    <PieChart portfolio_id={portfolio.portfolio_id} />
                 </div>
         }
     })
@@ -38,11 +38,11 @@ function Portfolio() {
         getPortfolioList();
     }, [])
     return (
-        <div style={{width:'80%',marginLeft:'10%'}}>
+        <div style={{ width: '80%', marginLeft: '10%' }}>
             <Button type="primary">Create New Portfolio</Button>
-             <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
-       
+
     )
 }
 export default Portfolio;
