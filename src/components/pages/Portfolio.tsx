@@ -1,6 +1,6 @@
-import { Button, Form, FormProps, Input, Modal, Tabs, TabsProps } from "antd";
+import { Button, Form, Input, Modal, Tabs, TabsProps } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
 import { portfolioList, portfolioPost } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -9,6 +9,7 @@ import PieChart from "../layouts/PieChart";
 import NewsPortfolio from "../layouts/NewsPortfolio";
 import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
+import SearchComponent from "../layouts/SearchComponent";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -17,11 +18,15 @@ function Portfolio() {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
+    const [portfolios, setportfolios] = useState<any[]>([])
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
 
 
     const onChange = (key: string) => {
         console.log(key)
         setActiveKey(key as any);
+        setSelectedPortfolioId(key);
     };
     const getPortfolioList = async () => {
         const res=await dispatch(portfolioList() as any).then(unwrapResult);
@@ -59,6 +64,35 @@ function Portfolio() {
             showModal();
         }
     };
+    const handleSearchSelect = async (item: any) => {
+        try {
+            setIsSearchModalVisible(false);
+            getPortfolioList();
+        } catch (error) {
+            console.error('Failed to use item:', error);
+        }
+    };
+    const showSearchModal = () => {
+    setIsSearchModalVisible(true);
+  };
+
+  const handleSearchCancel = () => {
+    setIsSearchModalVisible(false);
+  };
+    const _items: TabsProps['items'] = portfolios.map(portfolio => {
+        return {
+            key: portfolio.portfolio_id,
+            label: portfolio.name,
+            children:
+                <div>
+                    <DiagramAll portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <PieChart portfolio_id={portfolio.portfolio_id}/>
+                </div>
+        }
+    });
     const showModal = () => {
         setOpen(true);
     };
@@ -90,9 +124,26 @@ function Portfolio() {
     useEffect(() => {
         getPortfolioList();
     }, [])
+    // get currenct portfolio_id
+    useEffect(() => {
+        if (portfolios.length > 0) {
+            setSelectedPortfolioId(portfolios[0].portfolio_id);
+            console.log("selectedPortfolioId: "+selectedPortfolioId)
+        }
+    }, [portfolios]);
     return (
+
         <div style={{ width: '80%', marginLeft: '10%' }}>
             <Tabs type="editable-card" items={items} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
+            <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
+                + Add Item
+            </Button>
+            <SearchComponent
+                visible={isSearchModalVisible}
+                onCancel={handleSearchCancel}
+                onSelect={handleSearchSelect}
+                selectedPortfolioId={selectedPortfolioId}
+            />
 
             <Modal
                 title="Create a New Investment Portfolio"
@@ -127,7 +178,6 @@ function Portfolio() {
 
             </Modal>
         </div>
-
     )
 }
 export default Portfolio;

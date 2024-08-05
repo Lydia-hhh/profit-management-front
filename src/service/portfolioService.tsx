@@ -119,3 +119,54 @@ export function Activity({ portfolio_id }: any) {
         })
     })
 }
+export function FuzzySearch_list({typeIn}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.PRODUCTS_SEARCH,{
+            params:{typeIn}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
+export function ProductInfo({item_id}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.PRODUCTS_INFO,{
+            params:{item_id}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
+export function AddProduct({
+    portfolio_id,
+    item_id,
+    item_name,
+    item_type,
+    amount,
+    buy_date,
+    price,
+    currency
+}: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+        request.post(api.portfolioApi.PRODUCTS_ADD, {
+            portfolio_id,
+            item_id,
+            item_name,
+            item_type,
+            amount,
+            buy_date,
+            price,
+            currency
+        })
+        .then(response => {
+            resolve(response.data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
+}
