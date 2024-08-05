@@ -6,6 +6,10 @@ import { portfolioList, portfolioPost } from "../../store/features/portfolioSlic
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
+import NewsPortfolio from "../layouts/NewsPortfolio";
+import Record from "../layouts/Record";
+import Activity from "../layouts/Activity";
+
 function Portfolio() {
     const dispatch = useDispatch();
     const [activeKey, setActiveKey] = useState(undefined);
@@ -34,6 +38,9 @@ function Portfolio() {
                             <DiagramProfit portfolio_id={portfolio.portfolio_id} />
                             <div style={{ height: '50px' }}></div>
                             <PieChart portfolio_id={portfolio.portfolio_id} />
+                            <Record portfolio_id={portfolio.portfolio_id}/>
+                    <Activity portfolio_id={portfolio.portfolio_id}/>
+                    <NewsPortfolio portfolio_id={portfolio.portfolio_id}/>
                         </div>
                 }
             })
@@ -80,8 +87,6 @@ function Portfolio() {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
-
-
     useEffect(() => {
         getPortfolioList();
     }, [])

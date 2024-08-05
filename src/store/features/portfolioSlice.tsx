@@ -3,7 +3,6 @@ import service from './../../service';
 import { RootState } from "..";
 const initialState={
     user:'user1'
-    
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -44,9 +43,62 @@ export const portfolioList=createAsyncThunk("portfolio/portfolioList",async()=>{
 export const portfolioPost=createAsyncThunk("portfolio/portfolioPost",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Portfolio_Post(userInput);
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const portfolioNews=createAsyncThunk("portfolio/news",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Portfolio_News(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const productNews=createAsyncThunk("products/news",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Product_News(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const recordList=createAsyncThunk("portfolio/recordList",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Record_List(userInput);
         return res;
     }catch(err:any){
         console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const recordDelete=createAsyncThunk("portfolio/recordDelete",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Record_Delete(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const productDelete=createAsyncThunk("portfolio/productDelete",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Product_Delete(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const activity=createAsyncThunk("activity",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Activity(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
         alert("server error, please contact developer")
     }
 })
