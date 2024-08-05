@@ -44,3 +44,12 @@ export function Portfolio_List(){
         })
     })
 }
+export function Portfolio_Post({portfolio_name}:any){
+    return new Promise((resolve,reject)=>{
+        request.post(api.portfolioApi.PORTFOLIO,{portfolio_name}).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}

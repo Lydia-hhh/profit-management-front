@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import service from './../../service';
 import { RootState } from "..";
 const initialState={
+    user:'user1'
     
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
@@ -34,6 +35,15 @@ export const diagramDistribution=createAsyncThunk("portfolio/diagramDistribution
 export const portfolioList=createAsyncThunk("portfolio/portfolioList",async()=>{
     try{
         const res=await service.portfolioService.Portfolio_List();
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+export const portfolioPost=createAsyncThunk("portfolio/portfolioPost",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Portfolio_Post(userInput);
         return res;
     }catch(err:any){
         console.log(err);
