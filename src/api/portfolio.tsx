@@ -8,3 +8,5 @@ export const DIAGRAM_SINGLE="/diagram/single";
 export const DIAGRAM_DISTRIBUTION="/diagram/distribution";
 export const DIAGRAM_NAME="/products/name";
 export const PRODUCTS_INFO="/products/info";
+export const PORTFOLIO_NEWS="/portfolio/news";
+export const PRODUCT_NEWS="/products/news";

@@ -40,6 +40,24 @@ export const portfolioList=createAsyncThunk("portfolio/portfolioList",async()=>{
         alert("server error, please contact developer")
     }
 })
+export const portfolioNews=createAsyncThunk("portfolio/news",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Portfolio_News(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const productNews=createAsyncThunk("products/news",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Product_News(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{}

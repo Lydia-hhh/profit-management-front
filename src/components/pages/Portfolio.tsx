@@ -6,6 +6,7 @@ import { portfolioList } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
+import NewsPortfolio from "../layouts/NewsPortfolio";
 function Portfolio() {
     const dispatch = useDispatch();
     const [portfolios, setportfolios] = useState<any[]>([])
@@ -31,6 +32,7 @@ function Portfolio() {
                     <DiagramProfit portfolio_id={portfolio.portfolio_id} />
                     <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio.portfolio_id}/>
+                    <NewsPortfolio portfolio_id={portfolio.portfolio_id}/>
                 </div>
         }
     })
