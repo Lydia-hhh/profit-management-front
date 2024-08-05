@@ -100,3 +100,13 @@ export function Product_News({item_id}:any){
         })
     })
 }
+export function Activity({portfolio_id}:any){
+    return new Promise((resolve,reject)=>{
+        const url = api.portfolioApi.ACTIVITY + "/" + portfolio_id
+        request.get(url).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}

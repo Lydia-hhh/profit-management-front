@@ -8,6 +8,8 @@ import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
 import NewsPortfolio from "../layouts/NewsPortfolio";
 import Record from "../layouts/Record";
+import Activity from "../layouts/Activity";
+
 function Portfolio() {
     const dispatch = useDispatch();
     const [portfolios, setportfolios] = useState<any[]>([])
@@ -34,6 +36,7 @@ function Portfolio() {
                     <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio.portfolio_id}/>
                     <Record portfolio_id={portfolio.portfolio_id}/>
+                    <Activity portfolio_id={portfolio.portfolio_id}/>
                     <NewsPortfolio portfolio_id={portfolio.portfolio_id}/>
                 </div>
         }

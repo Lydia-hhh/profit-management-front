@@ -11,3 +11,4 @@ export const DIAGRAM_NAME="/products/name";
 export const PRODUCTS_INFO="/products/info";
 export const PORTFOLIO_NEWS="/portfolio/news";
 export const PRODUCT_NEWS="/products/news";
+export const ACTIVITY="/activity";

@@ -85,6 +85,15 @@ export const productDelete=createAsyncThunk("portfolio/productDelete",async(user
         alert("server error, please contact developer")
     }
 })
+export const activity=createAsyncThunk("activity",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Activity(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{}
