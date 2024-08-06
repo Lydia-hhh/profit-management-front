@@ -2,7 +2,7 @@ import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, Modal
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
-import { portfolioDelete, portfolioList, portfolioPost, recordList } from "../../store/features/portfolioSlice";
+import { portfolioDelete, portfolioList, portfolioPost, recordList, selectAddItem } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
@@ -10,6 +10,7 @@ import NewsPortfolio from "../layouts/NewsPortfolio";
 import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
 import { DeleteOutlined, DownOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { useAppSelector } from "../../store/hooks";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -21,10 +22,17 @@ function Portfolio() {
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
 
+    const [portfolios, setportfolios] = useState<any[]>([])
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
+    const { TabPane } = Tabs;
 
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
+    };
+    const onChangeRecord = (key: string) => {
+        console.log(key);
     };
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
@@ -35,7 +43,8 @@ function Portfolio() {
             return false;
         }
         return false;
-    }
+    };
+
     const getItems = async () => {
         const portfolios: any[] = await getPortfolioList();
         const result: any[] = await Promise.all(portfolios.map(async (portfolio: any) => {
@@ -91,9 +100,18 @@ function Portfolio() {
                     <DiagramProfit portfolio_id={portfolio_id} />
                     <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio_id} />
-                    <Record portfolio_id={portfolio_id} />
-                    <Activity portfolio_id={portfolio_id} />
-                    <NewsPortfolio portfolio_id={portfolio_id} />
+                    <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
+                        <TabPane tab="Records" key="1">
+                            <Record portfolio_id={portfolio_id}/>
+                        </TabPane>
+                        {/* 你可以在这里添加其他TabPane */}
+                        <TabPane tab="Activity" key="2">
+                            <Activity portfolio_id={portfolio_id}/>
+                        </TabPane>
+                        <TabPane tab="News" key="3">
+                            <NewsPortfolio portfolio_id={portfolio_id}/>
+                        </TabPane>
+                    </Tabs>;
                 </div>
             )
         }

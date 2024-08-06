@@ -8,8 +8,8 @@ import {unwrapResult} from "@reduxjs/toolkit";
 import {useDispatch} from "react-redux";
 import classNames from 'classnames';
 import SearchComponent from "../layouts/SearchComponent";
-import AddEntryModal from '../layouts/AddEntryModal'; 
-
+import AddEntryModal from '../layouts/AddEntryModal';
+import { useNavigate } from 'react-router-dom';
 
 function Record({portfolio_id}:any) {
     const dispatch = useDispatch();
@@ -17,6 +17,7 @@ function Record({portfolio_id}:any) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+    const navigate=useNavigate();
 
     const handleSearchSelect = async (item: any) => {
         try {
@@ -222,6 +223,10 @@ function Record({portfolio_id}:any) {
         console.log(records)
     }, [portfolio_id]);
 
+    function onRowClick(record: Record) {
+        navigate('/item?item_id='+record.item_id)
+    }
+
     return (
         <div>
             <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
@@ -248,6 +253,9 @@ function Record({portfolio_id}:any) {
                     )
                 }}
                 rowKey="item_id"
+                onRow={(record) => ({
+                    onClick: () => onRowClick(record),
+                })}
             />
             <AddEntryModal
                 visible={isModalVisible}
