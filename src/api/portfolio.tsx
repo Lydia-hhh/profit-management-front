@@ -1,8 +1,8 @@
 export const PORTFOLIO_LIST="/portfolio/list";
 export const PORTFOLIO="/portfolio";
 export const PRODUCTS="/products";
-export const PRODUCTS_SEARCH="/products/search";
 export const PRODUCTS_DEL="/products_all";
+export const PRODUCTS_SEARCH="/products/name";
 export const DIAGRAM_ALL="/diagram/all";
 export const DIAGRAM_PROFIT="/diagram/profit";
 export const DIAGRAM_SINGLE="/diagram/single";
@@ -12,3 +12,4 @@ export const PRODUCTS_INFO="/products/info";
 export const PORTFOLIO_NEWS="/portfolio/news";
 export const PRODUCT_NEWS="/products/news";
 export const ACTIVITY="/activity";
+export const PRODUCTS_ADD="/products";

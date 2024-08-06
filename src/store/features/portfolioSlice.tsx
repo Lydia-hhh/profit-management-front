@@ -85,6 +85,18 @@ export const recordList=createAsyncThunk("portfolio/recordList",async(userInput:
         alert("server error, please contact developer")
     }
 })
+/*fuzzy search*/
+export const fuzzySearchList=createAsyncThunk("portfolio/fuzzySearchList",
+    async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.FuzzySearch_list(userInput);
+
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
 export const recordDelete=createAsyncThunk("portfolio/recordDelete",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Record_Delete(userInput);
@@ -94,9 +106,32 @@ export const recordDelete=createAsyncThunk("portfolio/recordDelete",async(userIn
         alert("server error, please contact developer")
     }
 })
+/*get Info*/
+export const productsInfo=createAsyncThunk("portfolio/productsInfo",
+    async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.ProductInfo(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
 export const productDelete=createAsyncThunk("portfolio/productDelete",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Product_Delete(userInput);
+        return []
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer")
+    }
+})
+
+/*add*/
+export const addProduct=createAsyncThunk("portfolio/addProduct",
+    async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.AddProduct(userInput);
         return res;
     }catch(err:any){
         console.log(err);
@@ -112,8 +147,10 @@ export const activity=createAsyncThunk("activity",async(userInput:any)=>{
         alert("server error, please contact developer")
     }
 })
+
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{}
 })
+
 export default portfolioSlice.reducer;
