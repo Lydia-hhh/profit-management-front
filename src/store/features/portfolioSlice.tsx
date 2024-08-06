@@ -130,7 +130,7 @@ export const productsInfo=createAsyncThunk("portfolio/productsInfo",
 export const productDelete=createAsyncThunk("portfolio/productDelete",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Product_Delete(userInput);
-        return []
+        return res
     }catch(err:any){
         console.log(err);
         alert("server error, please contact developer")

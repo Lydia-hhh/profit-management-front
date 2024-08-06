@@ -55,6 +55,7 @@ function Record({portfolio_id}:any) {
         record_id: number;
         buy_date: string;
         buy_price: number;
+        currency: string;
         amount: number;
         revenue: number;
         revenue_rate: number;
@@ -79,14 +80,16 @@ function Record({portfolio_id}:any) {
         setIsModalVisible(true);
     };
 
-    const handleAddRecordWithId = (id:any) => {
+    const handleAddRecordWithId = (id:any, event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
         setSelectedItemId(id);
         setIsModalVisible(true);
         fetchRecords();
         console.log("I fetch Records!")
     };
 
-    const handleDeleteRecord = (item_id:any) => {
+    const handleDeleteRecord = (item_id: any, e: React.MouseEvent<HTMLElement> | undefined) => {
+        e?.stopPropagation();
         try {
             dispatch(productDelete({portfolio_id,item_id}) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
@@ -126,10 +129,11 @@ function Record({portfolio_id}:any) {
         { title: 'Item ID', dataIndex: 'item_id', key: 'item_id' },
         { title: 'Item Name', dataIndex: 'item_name', key: 'item_name' },
         { title: 'Current Price', dataIndex: 'current_price', key: 'current_price' },
+        { title: 'Currency', dataIndex: 'currency', key: 'currency' },
         { title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return' ,
             render: (text) => (
-                <span className={classNames('value', { positive: text >= 0, negative: text < 0 })}>
-                    {text} {text >= 0 ? '▲' : '▼'}
+                <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
+                    {text}
                 </span>
             ),},
         { title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate',
@@ -164,12 +168,16 @@ function Record({portfolio_id}:any) {
             width: 100,
             render: (text, record) => (
                 <span>
-          <Button icon={<PlusOutlined />} onClick={() => handleAddRecordWithId(record.item_id)} />
+          <Button icon={<PlusOutlined />} onClick={(e) => handleAddRecordWithId(record.item_id,e)}/>
             <Popconfirm
                 title="Sure to delete?"
-                onConfirm={() => handleDeleteRecord(record.item_id)}
+                onConfirm={(e) => {
+                    e?.stopPropagation();
+                    handleDeleteRecord(record.item_id, e);
+                }}
+                onCancel={(e) => e?.stopPropagation()}
             >
-            <Button icon={<DeleteOutlined />} />
+            <Button icon={<DeleteOutlined />} onClick={(e) => e?.stopPropagation()} />
           </Popconfirm>
         </span>
             )
@@ -186,8 +194,8 @@ function Record({portfolio_id}:any) {
         { title: 'Amount', dataIndex: 'amount', key: 'amount' },
         { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
             render: (text) => (
-                <span className={classNames('value', { positive: text >= 0, negative: text < 0 })}>
-                    {text} {text >= 0 ? '▲' : '▼'}
+                <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
+                    {text}
                 </span>
             ),},
         { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
@@ -223,9 +231,9 @@ function Record({portfolio_id}:any) {
         console.log(records)
     }, [portfolio_id]);
 
-    function onRowClick(record: Record) {
+    const onRowClick = (record: Record) => {
         navigate('/item?item_id='+record.item_id)
-    }
+    };
 
     return (
         <div>
