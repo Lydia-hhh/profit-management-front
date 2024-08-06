@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import service from './../../service';
 import { RootState } from "..";
 const initialState={
-    user:'user1'
+    add_item:true
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -159,7 +159,12 @@ export const activity=createAsyncThunk("activity",async(userInput:any)=>{
 
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
-    reducers:{}
+    reducers:{
+        change_add_item:(state)=>{
+            state.add_item=!state.add_item;
+        }
+    }
 })
-
+export const {change_add_item}=portfolioSlice.actions;
+export const selectAddItem=(state:RootState)=>state.portfolioReducer.add_item;
 export default portfolioSlice.reducer;

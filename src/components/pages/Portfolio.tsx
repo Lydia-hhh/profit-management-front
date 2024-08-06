@@ -20,15 +20,11 @@ function Portfolio() {
     const [portfolioId, setportfolioId] = useState<any>(null);
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [portfolios, setportfolios] = useState<any[]>([])
-    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
 
 
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
-        setSelectedPortfolioId(key);
     };
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
@@ -146,35 +142,6 @@ function Portfolio() {
             showModal();
         }
     };
-    const handleSearchSelect = async (item: any) => {
-        try {
-            setIsSearchModalVisible(false);
-            getPortfolioList();
-        } catch (error) {
-            console.error('Failed to use item:', error);
-        }
-    };
-    const showSearchModal = () => {
-        setIsSearchModalVisible(true);
-    };
-
-    const handleSearchCancel = () => {
-        setIsSearchModalVisible(false);
-    };
-    const _items: TabsProps['items'] = portfolios.map(portfolio => {
-        return {
-            key: portfolio.portfolio_id,
-            label: portfolio.name,
-            children:
-                <div>
-                    <DiagramAll portfolio_id={portfolio.portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio.portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <PieChart portfolio_id={portfolio.portfolio_id} />
-                </div>
-        }
-    });
     const showModal = () => {
         setOpen(true);
     };
@@ -223,13 +190,6 @@ function Portfolio() {
     useEffect(() => {
         getItems();
     }, [])
-    // get currenct portfolio_id
-    useEffect(() => {
-        if (portfolios.length > 0) {
-            setSelectedPortfolioId(portfolios[0].portfolio_id);
-            console.log("selectedPortfolioId: " + selectedPortfolioId)
-        }
-    }, [portfolios]);
     return (
 
         <div style={{ width: '80%', marginLeft: '10%' }}>
