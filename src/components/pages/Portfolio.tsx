@@ -59,7 +59,7 @@ function Portfolio() {
                 children: getTabNode(item.has_record, item.portfolio_id)
             };
         });
-        if(_items.length>0){
+        if (_items.length > 0) {
             setActiveKey(_items[0].key);
         }
         settapItems(_items);
@@ -119,8 +119,10 @@ function Portfolio() {
                         "No data available at the moment"
                     }
                 >
-                    <Button type="primary">Create Now</Button>
                 </Empty>
+                <Record portfolio_id={portfolio_id} />
+                <Activity portfolio_id={portfolio_id} />
+                <NewsPortfolio portfolio_id={portfolio_id} />
             </div>
 
         )
@@ -153,12 +155,12 @@ function Portfolio() {
         }
     };
     const showSearchModal = () => {
-    setIsSearchModalVisible(true);
-  };
+        setIsSearchModalVisible(true);
+    };
 
-  const handleSearchCancel = () => {
-    setIsSearchModalVisible(false);
-  };
+    const handleSearchCancel = () => {
+        setIsSearchModalVisible(false);
+    };
     const _items: TabsProps['items'] = portfolios.map(portfolio => {
         return {
             key: portfolio.portfolio_id,
@@ -169,7 +171,7 @@ function Portfolio() {
                     <div style={{ height: '50px' }}></div>
                     <DiagramProfit portfolio_id={portfolio.portfolio_id} />
                     <div style={{ height: '50px' }}></div>
-                    <PieChart portfolio_id={portfolio.portfolio_id}/>
+                    <PieChart portfolio_id={portfolio.portfolio_id} />
                 </div>
         }
     });
@@ -187,8 +189,8 @@ function Portfolio() {
     const handleDeleteCancel = () => {
         setDeleteopen(false);
     }
-    const handleDeleteOk = (portfolio_id:any) => {
-        console.log("p_id: ",portfolio_id)
+    const handleDeleteOk = (portfolio_id: any) => {
+        console.log("p_id: ", portfolio_id)
         setConfirmLoading(false);
         dispatch(portfolioDelete({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
             if (res && res.code == 200) {
@@ -225,7 +227,7 @@ function Portfolio() {
     useEffect(() => {
         if (portfolios.length > 0) {
             setSelectedPortfolioId(portfolios[0].portfolio_id);
-            console.log("selectedPortfolioId: "+selectedPortfolioId)
+            console.log("selectedPortfolioId: " + selectedPortfolioId)
         }
     }, [portfolios]);
     return (
@@ -265,7 +267,7 @@ function Portfolio() {
             </Modal>
             <Modal
                 open={deleteopen}
-                onOk={()=>{handleDeleteOk(portfolioId)}}
+                onOk={() => { handleDeleteOk(portfolioId) }}
                 confirmLoading={confirmLoading}
                 onCancel={handleDeleteCancel}
             >
