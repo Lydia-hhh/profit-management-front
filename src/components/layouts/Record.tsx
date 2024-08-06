@@ -67,8 +67,8 @@ function Record({portfolio_id}:any) {
             dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
                 console.log("getRecordList result: ", res)
                 if (res && res.code == 200) {
-                    setRecords(res.data);
-                    console.log(res.data)
+                    setRecords(res.data['items_list']);
+                    console.log(res.data['items_list'])
                 }
             })
         } catch (error) {

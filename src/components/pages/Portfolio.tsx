@@ -11,6 +11,7 @@ import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
 import { DeleteOutlined, DownOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../store/hooks";
+import RecordInfo from "../layouts/RecordInfo";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -114,7 +115,9 @@ function Portfolio() {
                         <TabPane tab="News" key="3">
                             <NewsPortfolio portfolio_id={portfolio_id}/>
                         </TabPane>
+
                     </Tabs>
+                    
                 </div>
             )
         }
@@ -137,9 +140,11 @@ function Portfolio() {
                     }
                 >
                 </Empty>
+                <RecordInfo portfolio_id={portfolio_id}/>
                 <Record portfolio_id={portfolio_id} />
                 <Activity portfolio_id={portfolio_id} />
                 <NewsPortfolio portfolio_id={portfolio_id} />
+                
             </div>
 
         )
