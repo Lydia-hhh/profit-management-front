@@ -189,3 +189,14 @@ export function AddProduct({
         });
     });
 }
+export function ProductHistoryPrice({item_id,buy_date}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.PRODUCTS_HISTORYPRICE,{
+            params:{item_id,buy_date}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}

@@ -13,3 +13,4 @@ export const PORTFOLIO_NEWS="/portfolio/news";
 export const PRODUCT_NEWS="/products/news";
 export const ACTIVITY="/activity";
 export const PRODUCTS_ADD="/products";
+export const PRODUCTS_HISTORYPRICE="/historyprice"

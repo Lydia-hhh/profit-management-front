@@ -21,6 +21,8 @@ function Portfolio() {
     const [portfolioId, setportfolioId] = useState<any>(null);
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const [portfolios, setportfolios] = useState<any[]>([])
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const { TabPane } = Tabs;
     const add_item=useAppSelector(selectAddItem);
     const active_key=useAppSelector(selectActiveKey);
@@ -28,6 +30,7 @@ function Portfolio() {
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
+        setSelectedPortfolioId(key);
     };
     const onChangeRecord = (key: string) => {
         console.log(key);
@@ -160,6 +163,21 @@ function Portfolio() {
             showModal();
         }
     };
+
+    const _items: TabsProps['items'] = portfolios.map(portfolio => {
+        return {
+            key: portfolio.portfolio_id,
+            label: portfolio.name,
+            children:
+                <div>
+                    <DiagramAll portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <PieChart portfolio_id={portfolio.portfolio_id} />
+                </div>
+        }
+    });
     const showModal = () => {
         setOpen(true);
     };
