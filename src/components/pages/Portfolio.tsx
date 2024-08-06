@@ -111,7 +111,7 @@ function Portfolio() {
                         <TabPane tab="News" key="3">
                             <NewsPortfolio portfolio_id={portfolio_id}/>
                         </TabPane>
-                    </Tabs>;
+                    </Tabs>
                 </div>
             )
         }
