@@ -7,7 +7,7 @@ function Item(){
     const item_id=params.get("item_id");
     console.log("item_id: ",item_id)
     return(
-        <div>
+        <div style={{width:'100%'}}>
             <div>{item_id}</div>
             <div style={{height:'15px'}}></div>
             <DiagramSingle item_id={item_id}/>

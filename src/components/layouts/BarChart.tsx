@@ -2,17 +2,20 @@ import { useRef, useEffect, useState } from "react";
 import * as echarts from 'echarts';
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-function BarChart({ timePrice,loading }: any) {
+function BarChart({ timePrice, loading }: any) {
     const chartRef = useRef<any>(null);
     const myChart = useRef<any>(null);
     const initChart = () => {
         if (myChart.current) {
             myChart.current.dispose();
         }
-        myChart.current = echarts.init(chartRef.current);
-        window.addEventListener('resize', function () {
-            myChart.current.resize();
-        })
+        myChart.current = echarts.init(chartRef.current, null, { renderer: 'canvas' });
+        window.addEventListener('resize', resizeChart)
+    }
+    const resizeChart = () => {
+        if (myChart.current) {
+            myChart.current.resize()
+        }
     }
     const getChart = () => {
         let option = {
@@ -36,9 +39,9 @@ function BarChart({ timePrice,loading }: any) {
                 {
                     type: 'bar',
                     data: timePrice,
-                    itemStyle:{
-                        color:function(params:any){
-                            return params.value[1]>0?'#91cc75':'#EE6666';
+                    itemStyle: {
+                        color: function (params: any) {
+                            return params.value[1] > 0 ? '#91cc75' : '#EE6666';
                         }
                     }
                 }
@@ -60,12 +63,15 @@ function BarChart({ timePrice,loading }: any) {
 
     useEffect(() => {
         initChart();
-        chartRef.current.style.width = '100%';
-        chartRef.current.style.height = '500px';
-        myChart.current.resize();
+        return () => {
+            window.removeEventListener('resize', resizeChart);
+        }
     }, [])
     useEffect(() => {
-        getChart();
+        if (myChart.current) {
+            getChart();
+            resizeChart();
+        }
     }, [timePrice])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>

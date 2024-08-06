@@ -5,15 +5,17 @@ import { LoadingOutlined } from "@ant-design/icons";
 function LineChart({ timePrice,loading }: any) {
     const chartRef = useRef<any>(null);
     const myChart = useRef<any>(null);
-    // const [loading, setloading] = useState<boolean>(true)
     const initChart = () => {
         if (myChart.current) {
             myChart.current.dispose();
         }
-        myChart.current = echarts.init(chartRef.current);
-        window.addEventListener('resize', function () {
+        myChart.current = echarts.init(chartRef.current,null,{renderer:'canvas'});
+        window.addEventListener('resize', resizeChart);
+    }
+    const resizeChart=()=>{
+        if(myChart.current){
             myChart.current.resize();
-        })
+        }
     }
     const getChart = () => {
         let option = {
@@ -32,6 +34,7 @@ function LineChart({ timePrice,loading }: any) {
             },
             yAxis: {
                 type: 'value',
+                min:'dataMin'
             },
             series: [
                 {
@@ -72,13 +75,15 @@ function LineChart({ timePrice,loading }: any) {
 
     useEffect(() => {
         initChart();
-        // 例如，动态调整容器的尺寸
-        chartRef.current.style.width = '100%';
-        chartRef.current.style.height = '500px';
-        myChart.current.resize(); // 调整图表尺寸
+        return () => {
+            window.removeEventListener('resize', resizeChart);
+        }
     }, [])
     useEffect(() => {
-        getChart();
+        if(myChart.current){
+            getChart();
+            resizeChart();
+        }
     }, [timePrice])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>

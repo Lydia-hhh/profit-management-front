@@ -65,7 +65,7 @@ function DiagramProfit({portfolio_id}:any){
     },[])
 
     return(
-        <div>
+        <div style={{width:'100%'}}>
             <Tabs defaultActiveKey="1" items={items} onChange={onChange}/>
         </div>
     )

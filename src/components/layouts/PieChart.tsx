@@ -5,17 +5,17 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { diagramDistribution } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
-function PieChart({portfolio_id}:any){
+function PieChart({ portfolio_id }: any) {
     const chartRef = useRef<any>(null);
     const myChart = useRef<any>(null);
     const [loading, setloading] = useState<boolean>(true);
-    const [data,setData]=useState<any[]>([]);
-    const dispatch=useDispatch();
-    const getDiagramDistribution=()=>{
+    const [data, setData] = useState<any[]>([]);
+    const dispatch = useDispatch();
+    const getDiagramDistribution = () => {
         setloading(true)
-        dispatch(diagramDistribution({portfolio_id}) as any).then(unwrapResult).then((res:any)=>{
+        dispatch(diagramDistribution({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
             setloading(false);
-            if(res && res.code==200){
+            if (res && res.code == 200) {
                 setData(res.data);
             }
         })
@@ -26,9 +26,12 @@ function PieChart({portfolio_id}:any){
             myChart.current.dispose();
         }
         myChart.current = echarts.init(chartRef.current);
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', resizeChart);
+    }
+    const resizeChart = () => {
+        if (myChart.current) {
             myChart.current.resize();
-        })
+        }
     }
     const getChart = () => {
         let option = {
@@ -36,43 +39,49 @@ function PieChart({portfolio_id}:any){
                 text: 'Pie Chart',
                 subtext: '',
                 left: 'center'
-              },
-              tooltip: {
+            },
+            tooltip: {
                 trigger: 'item'
-              },
-              legend: {
+            },
+            legend: {
                 orient: 'vertical',
                 left: 'left'
-              },
-              series: [
+            },
+            series: [
                 {
-                  name: 'Access From',
-                  type: 'pie',
-                  radius: '50%',
-                  data: data,
-                  emphasis: {
-                    itemStyle: {
-                      shadowBlur: 10,
-                      shadowOffsetX: 0,
-                      shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: data,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
-                  }
                 }
-              ]
+            ]
         };
-        console.log("pie chart option: ",option)
+        console.log("pie chart option: ", option)
         myChart.current.setOption(option);
     }
 
     useEffect(() => {
         initChart();
+        return () => {
+            window.removeEventListener('resize', resizeChart);
+        }
     }, [])
     useEffect(() => {
         getDiagramDistribution();
     }, [portfolio_id])
-    useEffect(()=>{
-        getChart();
-    },[data])
+    useEffect(() => {
+        if(myChart.current){
+            getChart();
+            resizeChart();
+        }
+    }, [data])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
             <div style={{ width: '100%', height: '500px' }} ref={chartRef}></div>

@@ -116,7 +116,7 @@ function Portfolio() {
             )
         }
         return (
-            <div>
+            <div style={{width:'100%'}}>
                 <Flex style={{ width: '100%' }} justify="flex-end">
                     <Dropdown onOpenChange={() => { setportfolioId(portfolio_id) }} menu={{ items }} trigger={['click']}>
                         <a onClick={(e) => e.preventDefault()}>
