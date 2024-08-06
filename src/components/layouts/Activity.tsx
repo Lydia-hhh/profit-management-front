@@ -45,8 +45,8 @@ function Activity({portfolio_id}:any){
                       description={
                         <>
                           <div><strong>Buy Date:</strong> {new Date(item.buy_date).toLocaleDateString()}</div>
-                          <div><strong>Amount:</strong> {item.amount} {item.currency}</div>
-                          <div><strong>Buy Price:</strong> ${item.buy_price.toFixed(2)}</div>
+                          <div><strong>Amount:</strong> {item.amount} </div>
+                          <div><strong>Buy Price:</strong> {item.currency} {item.buy_price.toFixed(2)}</div>
                         </>
                       }
                     />
