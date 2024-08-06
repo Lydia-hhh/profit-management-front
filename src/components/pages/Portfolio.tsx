@@ -99,10 +99,6 @@ function Portfolio() {
                             </a>
                         </Dropdown>
                     </Flex>
-                    <DiagramAll portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio_id} />
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
@@ -115,9 +111,12 @@ function Portfolio() {
                         <TabPane tab="News" key="3">
                             <NewsPortfolio portfolio_id={portfolio_id}/>
                         </TabPane>
-
                     </Tabs>
-                    
+                    <DiagramAll portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+
                 </div>
             )
         }
@@ -144,7 +143,7 @@ function Portfolio() {
                 <Record portfolio_id={portfolio_id} />
                 <Activity portfolio_id={portfolio_id} />
                 <NewsPortfolio portfolio_id={portfolio_id} />
-                
+
             </div>
 
         )
