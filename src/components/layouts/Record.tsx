@@ -7,11 +7,34 @@ import {diagramAll, productDelete, recordDelete, recordList} from "../../store/f
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useDispatch} from "react-redux";
 import classNames from 'classnames';
+import SearchComponent from "../layouts/SearchComponent";
+import AddEntryModal from '../layouts/AddEntryModal'; 
+
 
 function Record({portfolio_id}:any) {
     const dispatch = useDispatch();
     const [records, setRecords] = useState<Record[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
+    const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+    const handleSearchSelect = async (item: any) => {
+        try {
+            setIsSearchModalVisible(false);
+            setSelectedItemId(item.item_id);
+            setIsModalVisible(true);
+        } catch (error) {
+            console.error('Failed to use item:', error);
+        }
+    };
+    const showSearchModal = () => {
+        setIsSearchModalVisible(true);
+    };
+
+    const handleSearchCancel = () => {
+        setIsSearchModalVisible(false);
+    };
 
     interface Record {
         item_id: string;
@@ -57,6 +80,7 @@ function Record({portfolio_id}:any) {
     };
 
     const handleAddRecordWithId = (id:any) => {
+        setSelectedItemId(id);
         setIsModalVisible(true);
     };
 
@@ -199,6 +223,15 @@ function Record({portfolio_id}:any) {
 
     return (
         <div>
+            <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
+                                + Add Item
+            </Button>
+            <SearchComponent
+                visible={isSearchModalVisible}
+                onCancel={handleSearchCancel}
+                onSelect={handleSearchSelect}
+                selectedPortfolioId={selectedPortfolioId}
+            />
             <Table
                 columns={columns}
                 dataSource={records}
@@ -213,6 +246,13 @@ function Record({portfolio_id}:any) {
                     )
                 }}
                 rowKey="item_id"
+            />
+            <AddEntryModal
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                onAdd={handleAddRecord}
+                item_id={selectedItemId}
+                portfolio_id={portfolio_id}
             />
         </div>
     );

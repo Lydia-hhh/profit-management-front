@@ -9,7 +9,6 @@ import PieChart from "../layouts/PieChart";
 import NewsPortfolio from "../layouts/NewsPortfolio";
 import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
-import SearchComponent from "../layouts/SearchComponent";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -43,15 +42,6 @@ function Portfolio() {
                             <DiagramProfit portfolio_id={portfolio.portfolio_id} />
                             <div style={{ height: '50px' }}></div>
                             <PieChart portfolio_id={portfolio.portfolio_id} />
-                            <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
-                                + Add Item
-                            </Button>
-                            <SearchComponent
-                                visible={isSearchModalVisible}
-                                onCancel={handleSearchCancel}
-                                onSelect={handleSearchSelect}
-                                selectedPortfolioId={selectedPortfolioId}
-                            />
                             <Record portfolio_id={portfolio.portfolio_id}/>
                     <Activity portfolio_id={portfolio.portfolio_id}/>
                     <NewsPortfolio portfolio_id={portfolio.portfolio_id}/>
@@ -145,12 +135,6 @@ function Portfolio() {
 
         <div style={{ width: '80%', marginLeft: '10%' }}>
             <Tabs type="editable-card" items={items} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
-            <SearchComponent
-                visible={isSearchModalVisible}
-                onCancel={handleSearchCancel}
-                onSelect={handleSearchSelect}
-                selectedPortfolioId={selectedPortfolioId}
-            />
             <Modal
                 title="Create a New Investment Portfolio"
                 open={open}
