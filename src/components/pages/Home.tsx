@@ -4,22 +4,51 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { useEffect } from "react";
 import DiagramAll from "../layouts/DiagramAll";
 import Portfolio from "./Portfolio";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Content, Footer, Header } from "antd/es/layout/layout";
 
 function Home(){
-    const dispatch=useDispatch();
-    const test=()=>{
-        const portfolio_id=1;
-        const time_range="5d";
-        dispatch(diagramAll({portfolio_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
-        })
-    }
+    // const items = new Array(15).fill(null).map((_, index) => ({
+    //     key: index + 1,
+    //     label: `nav ${index + 1}`,
+    //   }));   
+     const items=[
+        {key:1,label:'Home'},
+        {key:2,label:'Portfolio'}
+     ]
+
     useEffect(() => {
-        // test()
     })
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+      } = theme.useToken();
     return(
-        <div>
+        <Layout>
+        <Header style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="demo-logo" />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={['2']}
+            items={items}
+            style={{ flex: 1, minWidth: 0 }}
+          />
+        </Header>
+        <Content style={{ padding: '0 48px' }}>
+          <div
+            style={{
+              background: colorBgContainer,
+              minHeight: 280,
+              padding: 24,
+              borderRadius: borderRadiusLG,
+            }}
+          >
             <Portfolio/>
-        </div>
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+        </Footer>
+      </Layout>
     );
 }
 export default Home;

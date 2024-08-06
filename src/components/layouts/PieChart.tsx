@@ -63,7 +63,6 @@ function PieChart({ portfolio_id }: any) {
                 }
             ]
         };
-        console.log("pie chart option: ", option)
         myChart.current.setOption(option);
     }
 
