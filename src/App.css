@@ -7,13 +7,13 @@
 }
 
 .value.positive {
-    background-color: rgb(252, 232, 230); /* 浅红色背景 */
-    color: rgb(165, 14, 14); /* 红色字体 */
+    background-color: rgb(230, 244, 234); /* 浅绿色背景 */
+    color: rgb(19, 115, 51); /* 绿色字体 */
 }
 
 .value.negative {
-    background-color: rgb(230, 244, 234); /* 浅绿色背景 */
-    color: rgb(19, 115, 51); /* 绿色字体 */
+    background-color: rgb(252, 232, 230); /* 浅红色背景 */
+    color: rgb(165, 14, 14); /* 红色字体 */
 }
 .value.zero {
     background-color: cornflowerblue; /* 浅绿色背景 */
@@ -21,9 +21,10 @@
 }
 
 .font.positive{
-    color: rgb(165, 14, 14); /* 红色字体 */
+    color: rgb(19, 115, 51); /* 绿色字体 */
+
 }
 
 .font.negative{
-    color: rgb(19, 115, 51); /* 绿色字体 */
+    color: rgb(165, 14, 14); /* 红色字体 */
 }
