@@ -13,6 +13,15 @@ export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:
         alert("server error, please contact developer")
     }
 })
+export const diagramSingle=createAsyncThunk("portfolio/diagramSingle",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Diagram_Single(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
 export const diagramProfit=createAsyncThunk("portfolio/diagramProfit",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Diagram_Profit(userInput);

@@ -13,6 +13,17 @@ export function Diagram_All({ portfolio_id, time_range }: any) {
         })
     })
 }
+export function Diagram_Single({item_id,time_range}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.DIAGRAM_SINGLE,{
+            params:{item_id,time_range}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
 export function Diagram_Profit({ portfolio_id, time_range }: any) {
     return new Promise((resolve, reject) => {
         request.get(api.portfolioApi.DIAGRAM_PROFIT, {
