@@ -60,6 +60,9 @@ function BarChart({ timePrice,loading }: any) {
 
     useEffect(() => {
         initChart();
+        chartRef.current.style.width = '100%';
+        chartRef.current.style.height = '500px';
+        myChart.current.resize();
     }, [])
     useEffect(() => {
         getChart();

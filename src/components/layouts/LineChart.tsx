@@ -10,7 +10,7 @@ function LineChart({ timePrice,loading }: any) {
         if (myChart.current) {
             myChart.current.dispose();
         }
-        myChart.current = echarts.init(chartRef.current,null,{renderer:'svg'});
+        myChart.current = echarts.init(chartRef.current);
         window.addEventListener('resize', function () {
             myChart.current.resize();
         })
