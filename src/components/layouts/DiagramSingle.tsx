@@ -80,7 +80,7 @@ function DiagramSingle({item_id}:any){
     }, [])
   
     return (
-      <div style={{ width: '100%', height: '100%' }}>
+      <div>
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
     )

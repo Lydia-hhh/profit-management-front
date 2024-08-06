@@ -33,7 +33,7 @@ function DiagramAll({ portfolio_id }: any) {
   }
   const getChildrenNode = () => {
     return (
-        <LineChart style={{ with: '100%', height: '100%' }} timePrice={timePrice} loading={loading} />
+        <LineChart timePrice={timePrice} loading={loading} />
     )
   }
 
@@ -82,7 +82,7 @@ function DiagramAll({ portfolio_id }: any) {
   }, [])
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
     </div>
   )

@@ -10,7 +10,7 @@ function LineChart({ timePrice,loading }: any) {
         if (myChart.current) {
             myChart.current.dispose();
         }
-        myChart.current = echarts.init(chartRef.current);
+        myChart.current = echarts.init(chartRef.current,null,{renderer:'svg'});
         window.addEventListener('resize', function () {
             myChart.current.resize();
         })
@@ -72,13 +72,12 @@ function LineChart({ timePrice,loading }: any) {
 
     useEffect(() => {
         initChart();
+        // 例如，动态调整容器的尺寸
+        chartRef.current.style.width = '100%';
+        chartRef.current.style.height = '500px';
+        myChart.current.resize(); // 调整图表尺寸
     }, [])
     useEffect(() => {
-        // if(timePrice.length===0){
-        //     setloading(true);
-        // }else{
-        //     setloading(false);
-        // }
         getChart();
     }, [timePrice])
     return (

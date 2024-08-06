@@ -214,7 +214,7 @@ function Portfolio() {
     }, [add_item])
     return (
 
-        <div style={{ width: '80%', marginLeft: '10%' }}>
+        <div style={{ width: '90%', marginLeft: '5%' }}>
             <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
             <Modal
                 title="Create a New Investment Portfolio"
