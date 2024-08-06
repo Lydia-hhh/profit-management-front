@@ -2,10 +2,10 @@ import { useRef, useEffect, useState } from "react";
 import * as echarts from 'echarts';
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-function LineChart({ timePrice }: any) {
+function LineChart({ timePrice,loading }: any) {
     const chartRef = useRef<any>(null);
     const myChart = useRef<any>(null);
-    const [loading, setloading] = useState<boolean>(true)
+    // const [loading, setloading] = useState<boolean>(true)
     const initChart = () => {
         if (myChart.current) {
             myChart.current.dispose();
@@ -74,11 +74,11 @@ function LineChart({ timePrice }: any) {
         initChart();
     }, [])
     useEffect(() => {
-        if(timePrice.length===0){
-            setloading(true);
-        }else{
-            setloading(false);
-        }
+        // if(timePrice.length===0){
+        //     setloading(true);
+        // }else{
+        //     setloading(false);
+        // }
         getChart();
     }, [timePrice])
     return (
