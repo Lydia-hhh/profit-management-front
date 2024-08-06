@@ -16,7 +16,6 @@ function Record({portfolio_id}:any) {
     const [records, setRecords] = useState<Record[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
     const handleSearchSelect = async (item: any) => {
@@ -82,6 +81,8 @@ function Record({portfolio_id}:any) {
     const handleAddRecordWithId = (id:any) => {
         setSelectedItemId(id);
         setIsModalVisible(true);
+        fetchRecords();
+        console.log("I fetch Records!")
     };
 
     const handleDeleteRecord = (item_id:any) => {
@@ -230,7 +231,8 @@ function Record({portfolio_id}:any) {
                 visible={isSearchModalVisible}
                 onCancel={handleSearchCancel}
                 onSelect={handleSearchSelect}
-                selectedPortfolioId={selectedPortfolioId}
+                selectedPortfolioId={portfolio_id}
+                onAddSuccess={fetchRecords}
             />
             <Table
                 columns={columns}
@@ -253,6 +255,7 @@ function Record({portfolio_id}:any) {
                 onAdd={handleAddRecord}
                 item_id={selectedItemId}
                 portfolio_id={portfolio_id}
+                onAddSuccess={fetchRecords}
             />
         </div>
     );
