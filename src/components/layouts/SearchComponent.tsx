@@ -9,13 +9,14 @@ interface SearchComponentProps {
   onCancel: () => void;
   onSelect: (item: any) => void;
   selectedPortfolioId: string | null;
+  onAddSuccess: () => void; 
 }
 
 interface SearchResultItem {
   item_id: string;
 }
 
-const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, onSelect, selectedPortfolioId }) => {
+const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, onSelect, selectedPortfolioId, onAddSuccess }) => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -61,6 +62,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
   const handleModalOk = (values: any) => {
     console.log("Form values:", values);
     setIsModalVisible(false); // close AddEntryModal
+    onAddSuccess(); 
   };
 
   return (
@@ -92,6 +94,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
         onAdd={handleModalOk}
         item_id={searchInput} // Pass searchInput as item_id
         portfolio_id={selectedPortfolioId} 
+        onAddSuccess={onAddSuccess}
       />
     </>
   );

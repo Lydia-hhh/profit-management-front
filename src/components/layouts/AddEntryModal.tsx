@@ -14,6 +14,7 @@ interface AddEntryModalProps {
   onAdd: (values: any) => void;
   item_id: string | null;
   portfolio_id: string | null;
+  onAddSuccess: () => void; 
 }
 interface ProductInfoResponse {
   data: {
@@ -23,7 +24,7 @@ interface ProductInfoResponse {
   };
 }
 
-const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd, item_id, portfolio_id }) => {
+const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd, item_id, portfolio_id,onAddSuccess }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [itemName, setItemName] = useState<string>('');
@@ -70,6 +71,7 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
         message.success('Product added successfully');
         form.resetFields();
         onCancel(); 
+        onAddSuccess();
       })
       .catch(() => message.error('Failed to add product'));
 
