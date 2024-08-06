@@ -2,7 +2,7 @@ import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, Modal
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
-import { portfolioDelete, portfolioList, portfolioPost, recordList, selectAddItem } from "../../store/features/portfolioSlice";
+import { portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
@@ -21,11 +21,9 @@ function Portfolio() {
     const [portfolioId, setportfolioId] = useState<any>(null);
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
-
-    const [portfolios, setportfolios] = useState<any[]>([])
-    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const { TabPane } = Tabs;
+    const add_item=useAppSelector(selectAddItem);
+    const active_key=useAppSelector(selectActiveKey);
 
     const onChange = (key: string) => {
         setportfolioId(key)
@@ -45,7 +43,7 @@ function Portfolio() {
         return false;
     };
 
-    const getItems = async () => {
+    const getItems = async (active:any) => {
         const portfolios: any[] = await getPortfolioList();
         const result: any[] = await Promise.all(portfolios.map(async (portfolio: any) => {
             const flag: any = await hasRecords({ portfolio_id: portfolio.portfolio_id });
@@ -64,8 +62,10 @@ function Portfolio() {
                 children: getTabNode(item.has_record, item.portfolio_id)
             };
         });
-        if (_items.length > 0) {
+        if (active===null && _items.length > 0) {
             setActiveKey(_items[0].key);
+        }else{
+            setActiveKey(active);
         }
         settapItems(_items);
         return _items;
@@ -179,7 +179,7 @@ function Portfolio() {
         setConfirmLoading(false);
         dispatch(portfolioDelete({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
             if (res && res.code == 200) {
-                getItems();
+                getItems(null);
                 setDeleteopen(false);
                 setConfirmLoading(false);
             }
@@ -194,7 +194,7 @@ function Portfolio() {
             setOpen(false);
             setConfirmLoading(false);
             if (res && res.code == 200) {
-                const _items: any = await getItems();
+                const _items: any = await getItems(null);
                 if (_items.length > 0) {
                     setActiveKey(_items[_items.length - 1].key)
                 }
@@ -205,9 +205,13 @@ function Portfolio() {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+    useEffect(()=>{
+        getItems(null);
+    },[])
     useEffect(() => {
-        getItems();
-    }, [])
+        setActiveKey(activeKey)
+        getItems(activeKey);
+    }, [add_item])
     return (
 
         <div style={{ width: '80%', marginLeft: '10%' }}>

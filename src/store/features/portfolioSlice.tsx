@@ -1,8 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import service from './../../service';
 import { RootState } from "..";
 const initialState={
-    add_item:true
+    add_item:true,
+    active_key:null
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -162,9 +163,13 @@ const portfolioSlice=createSlice({
     reducers:{
         change_add_item:(state)=>{
             state.add_item=!state.add_item;
+        },
+        set_active_key:(state,action:PayloadAction<any>)=>{
+            state.active_key=action.payload;
         }
     }
 })
-export const {change_add_item}=portfolioSlice.actions;
+export const {change_add_item,set_active_key}=portfolioSlice.actions;
 export const selectAddItem=(state:RootState)=>state.portfolioReducer.add_item;
+export const selectActiveKey=(state:RootState)=>state.portfolioReducer.active_key;
 export default portfolioSlice.reducer;

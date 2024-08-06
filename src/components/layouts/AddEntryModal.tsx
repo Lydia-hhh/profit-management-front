@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, DatePicker, message } from 'antd';
 import { useDispatch } from 'react-redux';
-import { productsInfo } from '../../store/features/portfolioSlice';
+import { change_add_item, productsInfo, set_active_key } from '../../store/features/portfolioSlice';
 import { addProduct } from "../../store/features/portfolioSlice"
 import dayjs, { Dayjs } from 'dayjs';
+import { useAppDispatch } from '../../store/hooks';
 
 
 const { Item: FormItem } = Form;
@@ -30,7 +31,7 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
   const [itemName, setItemName] = useState<string>('');
   const [itemType, setItemType] = useState<string>('');
   const [currency, setCurrency] = useState<string>('');
-
+  const sliceDispatch=useAppDispatch();
   useEffect(() => {
     if (item_id) {
       dispatch(productsInfo({ item_id }) as any)
@@ -72,6 +73,8 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
         form.resetFields();
         onCancel(); 
         onAddSuccess();
+        sliceDispatch(change_add_item())
+        sliceDispatch(set_active_key(portfolio_id))
       })
       .catch(() => message.error('Failed to add product'));
 
