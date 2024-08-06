@@ -23,12 +23,15 @@ function Portfolio() {
     const [portfolios, setportfolios] = useState<any[]>([])
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
-
+    const { TabPane } = Tabs;
 
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
         setSelectedPortfolioId(key);
+    };
+    const onChangeRecord = (key: string) => {
+        console.log(key);
     };
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
@@ -39,6 +42,9 @@ function Portfolio() {
             return false;
         }
         return false;
+    };
+    const showDeleteModal = () => {
+        setDeleteopen(true);
     }
     const getItems = async () => {
         const portfolios: any[] = await getPortfolioList();
@@ -95,9 +101,18 @@ function Portfolio() {
                     <DiagramProfit portfolio_id={portfolio_id} />
                     <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio_id} />
-                    <Record portfolio_id={portfolio_id} />
-                    <Activity portfolio_id={portfolio_id} />
-                    <NewsPortfolio portfolio_id={portfolio_id} />
+                    <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
+                        <TabPane tab="Records" key="1">
+                            <Record portfolio_id={portfolio_id}/>
+                        </TabPane>
+                        {/* 你可以在这里添加其他TabPane */}
+                        <TabPane tab="Activity" key="2">
+                            <Activity portfolio_id={portfolio_id}/>
+                        </TabPane>
+                        <TabPane tab="News" key="3">
+                            <NewsPortfolio portfolio_id={portfolio_id}/>
+                        </TabPane>
+                    </Tabs>;
                 </div>
             )
         }
@@ -136,7 +151,6 @@ function Portfolio() {
         }
         return [];
     }
-
 
     const onEdit = (
         targetKey: React.MouseEvent | React.KeyboardEvent | string,
@@ -178,9 +192,6 @@ function Portfolio() {
     const showModal = () => {
         setOpen(true);
     };
-    const showDeleteModal = () => {
-        setDeleteopen(true);
-    }
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
