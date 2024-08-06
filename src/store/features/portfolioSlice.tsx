@@ -43,8 +43,18 @@ export const portfolioList=createAsyncThunk("portfolio/portfolioList",async()=>{
 export const portfolioPost=createAsyncThunk("portfolio/portfolioPost",async(userInput:any)=>{
     try{
         const res=await service.portfolioService.Portfolio_Post(userInput);
+        return res;
     }catch(err:any){
         console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const portfolioDelete=createAsyncThunk("portfolio/portfolioDelete",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.Portfolio_Delete(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
         alert("server error, please contact developer")
     }
 })

@@ -53,7 +53,15 @@ export function Portfolio_Post({ portfolio_name }: any) {
         })
     })
 }
-
+export function Portfolio_Delete({portfolio_id}:any){
+    return new Promise((resolve,reject)=>{
+        request.delete(api.portfolioApi.PORTFOLIO+"/"+portfolio_id).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
 export function Record_List({ portfolio_id }: any) {
     return new Promise((resolve, reject) => {
         const url = api.portfolioApi.PORTFOLIO + "/" + portfolio_id
