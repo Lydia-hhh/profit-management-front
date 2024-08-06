@@ -6,7 +6,6 @@ import { addProduct, getProductHistoryPrice } from "../../store/features/portfol
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch } from '../../store/hooks';
 
-
 const { Item: FormItem } = Form;
 
 interface AddEntryModalProps {
@@ -40,7 +39,6 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
   const [itemName, setItemName] = useState<string>('');
   const [itemType, setItemType] = useState<string>('');
   const [currency, setCurrency] = useState<string>('');
-  const [current_date,setCurrencyDate] = useState<Date>();
   const [current_price, setCurrencyPrice] = useState<number>(0);
   const [current_rate, setCurrencyRate] = useState<number>(0);
   const [history_price, setHistoryPrice] = useState<number>(0);

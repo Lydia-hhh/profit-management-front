@@ -200,3 +200,14 @@ export function ProductHistoryPrice({item_id,buy_date}:any){
         })
     })
 }
+export function ProductDetail({item_id}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.PRODUCTS_DETAIL,{
+            params:{item_id}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
