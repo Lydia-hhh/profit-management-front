@@ -105,7 +105,9 @@ function Item(){
                             <p><strong>Market Cap:</strong> {stockData.market_cap}</p>
                             <p><strong>Average Volume:</strong> {stockData.average_volume}</p>
                             <p><strong>Trailing P/E:</strong> {stockData.trailing_pe}</p>
-                            {/* <p><strong>Dividend Yield:</strong> {stockData.dividend_yield}</p> */}
+                            {stockData.dividend_yield !== null && (
+                                <p><strong>Dividend Yield:</strong> {stockData.dividend_yield}</p>
+                            )}
                             <p><strong>Exchange:</strong> {stockData.exchange}</p>
                         </Card>
                     )}
