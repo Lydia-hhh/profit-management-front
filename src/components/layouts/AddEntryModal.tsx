@@ -21,9 +21,9 @@ interface ProductInfoResponse {
     item_name: string;
     item_type: string;
     currency: string;
-    current_price: number;
-    current_rate: number;
-    history_price: number
+    current_price: number | null;
+    current_rate: number | null;
+    history_price: number;
   };
 }
 
@@ -39,8 +39,8 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
   const [itemName, setItemName] = useState<string>('');
   const [itemType, setItemType] = useState<string>('');
   const [currency, setCurrency] = useState<string>('');
-  const [current_price, setCurrencyPrice] = useState<number>(0);
-  const [current_rate, setCurrencyRate] = useState<number>(0);
+  const [current_price, setCurrencyPrice] = useState<number | null>(null);
+  const [current_rate, setCurrencyRate] = useState<number | null>(null);
   const [history_price, setHistoryPrice] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const sliceDispatch=useAppDispatch();
@@ -160,18 +160,30 @@ return (
         </Col>
         <Col span={8}>
           <FormItem label="Current Price">
-            <Input value={`${getCurrencySymbol(currency)}${current_price}`}  readOnly />
-          </FormItem>
-        </Col>
-        <Col span={8}>
-          <FormItem label="Current Rate">
             <Input 
-              value={formatRate(current_rate)} 
+              value={current_price != null ? `${getCurrencySymbol(currency)}${current_price}` : getCurrencySymbol(currency)} 
               readOnly 
-              style={{ color: current_rate < 0 ? 'red' : 'green' }} 
+              disabled={current_price == null} 
+              style={{ 
+                color: current_price == null ? 'grey' : 'black', 
+                cursor: current_price == null ? 'not-allowed' : 'default' 
+              }} 
             />
           </FormItem>
         </Col>
+        <Col span={8}>
+        <FormItem label="Current Rate">
+          <Input 
+            value={current_rate != null ? formatRate(current_rate) : ''} 
+            readOnly 
+            disabled={current_rate == null} 
+            style={{ 
+              color: current_rate == null ? 'grey' : (current_rate < 0 ? 'red' : 'green'), 
+              cursor: current_rate == null ? 'not-allowed' : 'default' 
+            }} 
+          />
+        </FormItem>
+      </Col>
       </Row>
       {portfolio_id && (
         <FormItem label="Portfolio ID">
