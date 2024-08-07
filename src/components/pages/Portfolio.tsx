@@ -39,7 +39,7 @@ function Portfolio() {
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
         if (res && res.code == 200) {
-            if (res.data.length > 0) {
+            if (res.data && res.data.items_list.length>0) {
                 return true;
             }
             return false;
@@ -51,6 +51,9 @@ function Portfolio() {
         const portfolios: any[] = await getPortfolioList();
         const result: any[] = await Promise.all(portfolios.map(async (portfolio: any) => {
             const flag: any = await hasRecords({ portfolio_id: portfolio.portfolio_id });
+            console.log("portfolio_id: ",portfolio.portfolio_id)
+            console.log("portfolio_name: ",portfolio.name)
+            console.log("has_record: ",flag)
             return {
                 portfolio_id: portfolio.portfolio_id,
                 portfolio_name: portfolio.name,

@@ -72,7 +72,7 @@ function Record({portfolio_id}:any) {
                     setRecords(res.data['items_list']);
                     console.log(res.data['items_list'])
                     const allSubRecordIds = new Set<number>(
-                        res.data['items_list'].Map((record: Record) =>
+                        res.data['items_list'].map((record: Record) =>
                             record.records.map((subRecord: SubRecord) => subRecord.record_id)
                         )
                     );
