@@ -3,16 +3,20 @@ import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import LineChart from './LineChart';
 import { useDispatch } from 'react-redux';
-import { diagramAll, diagramProfit } from '../../store/features/portfolioSlice';
+import {diagramAll, diagramProfit, selectSelectedList} from '../../store/features/portfolioSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import BarChart from './BarChart';
+import {useAppSelector} from "../../store/hooks";
 
 function DiagramProfit({portfolio_id}:any){
     const [timePrice,settimePrice]=useState<any[]>([]);
     const [disabled,setdisabled]=useState<string>("all")
     const [loading,setloading]=useState<boolean>(false);
-    const dispatch=useDispatch();
+    const [time_range, setTimeRange] = useState<string>("1m");
+    const dispatch = useDispatch();
+    const selectedSubRecordIds=useAppSelector(selectSelectedList);
     const onChange = (key: string) => {
+        setTimeRange(key)
         settimePrice([]);
         getDiagramProfit(key);
     };
@@ -20,7 +24,9 @@ function DiagramProfit({portfolio_id}:any){
         let data:any[]=[];
         setdisabled(time_range)
         setloading(true)
-        dispatch(diagramProfit({portfolio_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
+        let records_id = selectedSubRecordIds==null?"[2]":selectedSubRecordIds
+        console.log("ids: "+records_id)
+        dispatch(diagramProfit({records_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
           setdisabled("all")
           setloading(false)
             if(res && res.code==200){
@@ -61,8 +67,13 @@ function DiagramProfit({portfolio_id}:any){
 
     useEffect(()=>{
         settimePrice([]);
-        getDiagramProfit('1m');
+        getDiagramProfit(time_range);
     },[])
+
+    useEffect(() => {
+        settimePrice([]);
+        getDiagramProfit(time_range);
+    }, [selectedSubRecordIds])
 
     return(
         <div style={{width:'100%'}}>

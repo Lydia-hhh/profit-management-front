@@ -24,10 +24,10 @@ export function Diagram_Single({ item_id, time_range }: any) {
         })
     })
 }
-export function Diagram_Profit({ portfolio_id, time_range }: any) {
+export function Diagram_Profit({ records_id, time_range }: any) {
     return new Promise((resolve, reject) => {
         request.get(api.portfolioApi.DIAGRAM_PROFIT, {
-            params: { portfolio_id, time_range }
+            params: { records_id, time_range }
         }).then((res) => {
             resolve(res);
         }).catch((err) => {

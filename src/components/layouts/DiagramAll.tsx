@@ -12,17 +12,18 @@ function DiagramAll({ portfolio_id }: any) {
   const [timePrice, settimePrice] = useState<any[]>([]);
   const [disabled, setdisabled] = useState<string>("all")
   const [loading, setloading] = useState<boolean>(false);
+  const [time_range, setTimeRange] = useState<string>("1d");
   const dispatch = useDispatch();
   const selectedSubRecordIds=useAppSelector(selectSelectedList);
   const onChange = (key: string) => {
-    // settimePrice([]);
+    setTimeRange(key)
     getDiagramAll(key);
   };
   const getDiagramAll = (time_range: any) => {
     let data: any[] = [];
     setdisabled(time_range)
     setloading(true);
-    let records_id = selectedSubRecordIds
+    let records_id = selectedSubRecordIds==null?"[2]":selectedSubRecordIds
     console.log("ids: "+records_id)
     dispatch(diagramAll({ records_id, time_range }) as any).then(unwrapResult).then((res: any) => {
       setdisabled("all")
@@ -82,11 +83,11 @@ function DiagramAll({ portfolio_id }: any) {
 
   useEffect(() => {
     settimePrice([]);
-    getDiagramAll('1d');
+    getDiagramAll(time_range);
   }, [])
   useEffect(() => {
     settimePrice([]);
-    getDiagramAll('1d');
+    getDiagramAll(time_range);
   }, [selectedSubRecordIds])
   return (
     <div style={{width:'100%'}}>
