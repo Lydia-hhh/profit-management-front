@@ -106,7 +106,7 @@ function Item(){
                             <p><strong>Average Volume:</strong> {stockData.average_volume}</p>
                             <p><strong>Trailing P/E:</strong> {stockData.trailing_pe}</p>
                             {stockData.dividend_yield !== null && (
-                                <p><strong>Dividend Yield:</strong> {stockData.dividend_yield}</p>
+                                <p><strong>Dividend Yield:</strong> {(stockData.dividend_yield * 100).toFixed(2)}%</p>
                             )}
                             <p><strong>Exchange:</strong> {stockData.exchange}</p>
                         </Card>
