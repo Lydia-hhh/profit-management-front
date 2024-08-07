@@ -3,7 +3,8 @@ import service from './../../service';
 import { RootState } from "..";
 const initialState={
     add_item:true,
-    active_key:null
+    active_key:null,
+    selectedSubRecordIds:[],
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -192,10 +193,14 @@ const portfolioSlice=createSlice({
         },
         set_active_key:(state,action:PayloadAction<any>)=>{
             state.active_key=action.payload;
+        },
+        change_selected_list:(state,action:PayloadAction<any>)=>{
+            state.selectedSubRecordIds=action.payload;
         }
     }
 })
-export const {change_add_item,set_active_key}=portfolioSlice.actions;
+export const {change_add_item,set_active_key,change_selected_list}=portfolioSlice.actions;
 export const selectAddItem=(state:RootState)=>state.portfolioReducer.add_item;
 export const selectActiveKey=(state:RootState)=>state.portfolioReducer.active_key;
+export const selectSelectedList=(state:RootState)=>state.portfolioReducer.selectedSubRecordIds;
 export default portfolioSlice.reducer;

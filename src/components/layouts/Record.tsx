@@ -3,13 +3,22 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, message, Checkbox, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import {diagramAll, productDelete, recordDelete, recordList} from "../../store/features/portfolioSlice";
+import {
+    change_add_item, change_selected_list,
+    diagramAll,
+    productDelete,
+    recordDelete,
+    recordList,
+    set_active_key
+} from "../../store/features/portfolioSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useDispatch} from "react-redux";
 import classNames from 'classnames';
 import SearchComponent from "../layouts/SearchComponent";
 import AddEntryModal from '../layouts/AddEntryModal';
 import { useNavigate } from 'react-router-dom';
+import {useAppDispatch} from "../../store/hooks";
+import {all} from "axios";
 
 function Record({portfolio_id}:any) {
     const dispatch = useDispatch();
@@ -19,7 +28,7 @@ function Record({portfolio_id}:any) {
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
     const navigate=useNavigate();
     const [selectedSubRecordIds, setSelectedSubRecordIds] = useState<Set<number>>(new Set());
-
+    const sliceDispatch=useAppDispatch();
 
     const handleSearchSelect = async (item: any) => {
         try {
@@ -80,7 +89,7 @@ function Record({portfolio_id}:any) {
                     });
                     console.log(allSubRecordIds)
                     setSelectedSubRecordIds(allSubRecordIds);
-                    localStorage.setItem("selectedSubRecordIds",JSON.stringify(Array.from(allSubRecordIds)));
+                    sliceDispatch(change_selected_list(JSON.stringify(Array.from(allSubRecordIds))))
                 }
             })
         } catch (error) {
@@ -137,7 +146,7 @@ function Record({portfolio_id}:any) {
             newSelectedSubRecordIds.delete(subRecord.record_id);
         }
         setSelectedSubRecordIds(newSelectedSubRecordIds);
-        localStorage.setItem("selectedSubRecordIds",JSON.stringify(Array.from(newSelectedSubRecordIds)));
+        sliceDispatch(change_selected_list(JSON.stringify(Array.from(newSelectedSubRecordIds))))
 
         console.log('Selected Record IDs:', newSelectedSubRecordIds);
     };

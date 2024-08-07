@@ -3,15 +3,17 @@ import { Button, Dropdown, Empty, message, Tabs, Typography } from 'antd';
 import type { MenuProps, TabsProps } from 'antd';
 import LineChart from './LineChart';
 import { useDispatch } from 'react-redux';
-import { diagramAll, diagramProfit } from '../../store/features/portfolioSlice';
+import {diagramAll, diagramProfit, selectAddItem, selectSelectedList} from '../../store/features/portfolioSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { UserOutlined } from '@ant-design/icons';
+import {useAppSelector} from "../../store/hooks";
 
 function DiagramAll({ portfolio_id }: any) {
   const [timePrice, settimePrice] = useState<any[]>([]);
   const [disabled, setdisabled] = useState<string>("all")
   const [loading, setloading] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const selectedSubRecordIds=useAppSelector(selectSelectedList);
   const onChange = (key: string) => {
     // settimePrice([]);
     getDiagramAll(key);
@@ -20,7 +22,7 @@ function DiagramAll({ portfolio_id }: any) {
     let data: any[] = [];
     setdisabled(time_range)
     setloading(true);
-    let records_id = localStorage.getItem("selectedSubRecordIds")
+    let records_id = selectedSubRecordIds
     console.log("ids: "+records_id)
     dispatch(diagramAll({ records_id, time_range }) as any).then(unwrapResult).then((res: any) => {
       setdisabled("all")
@@ -82,7 +84,10 @@ function DiagramAll({ portfolio_id }: any) {
     settimePrice([]);
     getDiagramAll('1d');
   }, [])
-
+  useEffect(() => {
+    settimePrice([]);
+    getDiagramAll('1d');
+  }, [selectedSubRecordIds])
   return (
     <div style={{width:'100%'}}>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
