@@ -106,7 +106,7 @@ function Portfolio() {
                     <div style={{ height: '50px' }}></div>
                     <DiagramProfit portfolio_id={portfolio_id} />
                     <div style={{ height: '50px' }}></div>
-                    <PieChart portfolio_id={portfolio_id} />
+                    <RecordInfo portfolio_id={portfolio_id}/>
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
                             <Record portfolio_id={portfolio_id}/>
