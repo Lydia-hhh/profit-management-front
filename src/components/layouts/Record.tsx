@@ -170,7 +170,7 @@ function Record({portfolio_id}:any) {
         { title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return' ,
             render: (text) => (
                 <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
-                    {text}
+                    {new Intl.NumberFormat().format(text)}
                 </span>
             ),},
         { title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate',
@@ -182,11 +182,13 @@ function Record({portfolio_id}:any) {
                     </span>
                 );
             },},
-        { title: 'Total Amount', dataIndex: 'total_amount', key: 'total_amount' },
+        { title: 'Total Amount', dataIndex: 'total_amount', key: 'total_amount',
+            render: (text) => new Intl.NumberFormat().format(text),
+         },
         { title: 'Total Return', dataIndex: 'total_return', key: 'total_return' ,
             render: (text) => (
                 <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
-                    {text}
+                    {new Intl.NumberFormat().format(text)}
                 </span>
             ),},
         { title: 'Total Return Rate', dataIndex: 'total_return_rate', key: 'total_return_rate' ,
@@ -198,7 +200,8 @@ function Record({portfolio_id}:any) {
                     </span>
                 );
             },},
-        { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
+        { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
+            render: (text) => new Intl.NumberFormat().format(text), },
         {
             title: 'Actions',
             key: 'actions',
@@ -238,12 +241,14 @@ function Record({portfolio_id}:any) {
                     formatDate(text)
                 ),
             },
-            { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' },
-            { title: 'Amount', dataIndex: 'amount', key: 'amount' },
+            { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' ,
+                render: (text) => new Intl.NumberFormat().format(text),},
+            { title: 'Amount', dataIndex: 'amount', key: 'amount',
+                render: (text) => new Intl.NumberFormat().format(text), },
             { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
                 render: (text) => (
                     <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
-                        {text}
+                        {new Intl.NumberFormat().format(text)}
                     </span>
                 ),},
             { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
@@ -255,7 +260,8 @@ function Record({portfolio_id}:any) {
                         </span>
                     );
                 },},
-            { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
+            { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
+                render: (text) => new Intl.NumberFormat().format(text), },
             {
                 title: 'Actions',
                 key: 'actions',
