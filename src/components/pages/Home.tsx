@@ -7,6 +7,7 @@ import Portfolio from "./Portfolio";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import SearchItem from "./SearchItem";
+import HomeContent from '../layouts/HomeContent';
 
 function Home() {
     const [component,setComponent]=useState<any>(null)
@@ -17,7 +18,8 @@ function Home() {
     ]
     const getComponent=(key:any)=>{
         if(key==1){
-            setComponent(<div>Home</div>)
+        setComponent(<HomeContent />);
+            // setComponent(<div>Home</div>)
         }else if(key==2){
             setComponent(<Portfolio/>)
         }else if(key==3){
