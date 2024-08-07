@@ -102,24 +102,24 @@ function Portfolio() {
                             </a>
                         </Dropdown>
                     </Flex>
+                    <DiagramAll portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio_id} />
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
                             <Record portfolio_id={portfolio_id}/>
                         </TabPane>
-                        {/* 你可以在这里添加其他TabPane */}
+                         你可以在这里添加其他TabPane
                         <TabPane tab="Activity" key="2">
                             <Activity portfolio_id={portfolio_id}/>
                         </TabPane>
                         <TabPane tab="News" key="3">
                             <NewsPortfolio portfolio_id={portfolio_id}/>
                         </TabPane>
-                    </Tabs>
-                    <DiagramAll portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
 
+                    </Tabs>
                 </div>
             )
         }

@@ -20,9 +20,9 @@ function DiagramAll({ portfolio_id }: any) {
     let data: any[] = [];
     setdisabled(time_range)
     setloading(true);
-    let record_id = localStorage.getItem("selectedSubRecordIds")
-    console.log("ids: "+record_id)
-    dispatch(diagramAll({ record_id, time_range }) as any).then(unwrapResult).then((res: any) => {
+    let records_id = localStorage.getItem("selectedSubRecordIds")
+    console.log("ids: "+records_id)
+    dispatch(diagramAll({ records_id, time_range }) as any).then(unwrapResult).then((res: any) => {
       setdisabled("all")
       setloading(false);
       if (res && res.code == 200) {

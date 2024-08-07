@@ -71,11 +71,14 @@ function Record({portfolio_id}:any) {
                 if (res && res.code == 200) {
                     setRecords(res.data['items_list']);
                     console.log(res.data['items_list'])
-                    const allSubRecordIds = new Set<number>(
-                        res.data['items_list'].map((record: Record) =>
-                            record.records.map((subRecord: SubRecord) => subRecord.record_id)
-                        )
-                    );
+
+                    const allSubRecordIds = new Set<number>
+                    res.data['items_list'].forEach((item: Record) => {
+                        item.records.forEach((record: SubRecord) => {
+                            allSubRecordIds.add(record.record_id);
+                        });
+                    });
+                    console.log(allSubRecordIds)
                     setSelectedSubRecordIds(allSubRecordIds);
                     localStorage.setItem("selectedSubRecordIds",JSON.stringify(Array.from(allSubRecordIds)));
                 }
