@@ -28,6 +28,7 @@ interface Statistical {
   total_return: string;
   total_return_rate: string;
   trailingPE: PieChartDataItem[];
+  sector: PieChartDataItem[];
 }
 
 const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
@@ -126,6 +127,11 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
           title = 'P/E ratio';
           subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low \ncompared to other stocks.\nLow: ratio less than 10.\nMedium: ratio 10-20.\nHigh: ratio greater than 20."
           break;
+        case 4:
+          data = statisticalInfo.sector;
+          title = 'Sector concentration';
+          subtitle = ""
+          break;          
         default:
           data = [];
           title = '';
