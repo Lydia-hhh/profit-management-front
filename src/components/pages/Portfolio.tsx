@@ -25,8 +25,8 @@ function Portfolio() {
     const [portfolios, setportfolios] = useState<any[]>([])
     const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const { TabPane } = Tabs;
-    const add_item=useAppSelector(selectAddItem);
-    const active_key=useAppSelector(selectActiveKey);
+    const add_item = useAppSelector(selectAddItem);
+    const active_key = useAppSelector(selectActiveKey);
 
     const onChange = (key: string) => {
         setportfolioId(key)
@@ -39,7 +39,7 @@ function Portfolio() {
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
         if (res && res.code == 200) {
-            if (res.data && res.data.items_list.length>0) {
+            if (res.data && res.data.items_list.length > 0) {
                 return true;
             }
             return false;
@@ -47,13 +47,13 @@ function Portfolio() {
         return false;
     };
 
-    const getItems = async (active:any) => {
+    const getItems = async (active: any) => {
         const portfolios: any[] = await getPortfolioList();
         const result: any[] = await Promise.all(portfolios.map(async (portfolio: any) => {
             const flag: any = await hasRecords({ portfolio_id: portfolio.portfolio_id });
-            console.log("portfolio_id: ",portfolio.portfolio_id)
-            console.log("portfolio_name: ",portfolio.name)
-            console.log("has_record: ",flag)
+            console.log("portfolio_id: ", portfolio.portfolio_id)
+            console.log("portfolio_name: ", portfolio.name)
+            console.log("has_record: ", flag)
             return {
                 portfolio_id: portfolio.portfolio_id,
                 portfolio_name: portfolio.name,
@@ -69,9 +69,9 @@ function Portfolio() {
                 children: getTabNode(item.has_record, item.portfolio_id)
             };
         });
-        if (active===null && _items.length > 0) {
+        if (active === null && _items.length > 0) {
             setActiveKey(_items[0].key);
-        }else{
+        } else {
             setActiveKey(active);
         }
         settapItems(_items);
@@ -106,17 +106,17 @@ function Portfolio() {
                     <div style={{ height: '50px' }}></div>
                     <DiagramProfit portfolio_id={portfolio_id} />
                     <div style={{ height: '50px' }}></div>
-                    <RecordInfo portfolio_id={portfolio_id}/>
+                    <RecordInfo portfolio_id={portfolio_id} />
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
-                            <Record portfolio_id={portfolio_id}/>
+                            <Record portfolio_id={portfolio_id} />
                         </TabPane>
-                         你可以在这里添加其他TabPane
+                        你可以在这里添加其他TabPane
                         <TabPane tab="Activity" key="2">
-                            <Activity portfolio_id={portfolio_id}/>
+                            <Activity portfolio_id={portfolio_id} />
                         </TabPane>
                         <TabPane tab="News" key="3">
-                            <NewsPortfolio portfolio_id={portfolio_id}/>
+                            <NewsPortfolio portfolio_id={portfolio_id} />
                         </TabPane>
 
                     </Tabs>
@@ -124,7 +124,7 @@ function Portfolio() {
             )
         }
         return (
-            <div style={{width:'100%'}}>
+            <div style={{ width: '100%' }}>
                 <Flex style={{ width: '100%' }} justify="flex-end">
                     <Dropdown onOpenChange={() => { setportfolioId(portfolio_id) }} menu={{ items }} trigger={['click']}>
                         <a onClick={(e) => e.preventDefault()}>
@@ -142,13 +142,21 @@ function Portfolio() {
                     }
                 >
                 </Empty>
-                <RecordInfo portfolio_id={portfolio_id}/>
-                <Record portfolio_id={portfolio_id} />
-                <Activity portfolio_id={portfolio_id} />
-                <NewsPortfolio portfolio_id={portfolio_id} />
+                <RecordInfo portfolio_id={portfolio_id} />
+                <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
+                    <TabPane tab="Records" key="1">
+                        <Record portfolio_id={portfolio_id} />
+                    </TabPane>
+                    你可以在这里添加其他TabPane
+                    <TabPane tab="Activity" key="2">
+                        <Activity portfolio_id={portfolio_id} />
+                    </TabPane>
+                    <TabPane tab="News" key="3">
+                        <NewsPortfolio portfolio_id={portfolio_id} />
+                    </TabPane>
 
+                </Tabs>
             </div>
-
         )
     }
 
@@ -230,15 +238,15 @@ function Portfolio() {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
-    useEffect(()=>{
+    useEffect(() => {
         getItems(null);
-    },[])
+    }, [])
     useEffect(() => {
         setActiveKey(activeKey)
         getItems(activeKey);
     }, [add_item])
     return (
-
+        
         <div style={{ width: '90%', marginLeft: '5%' }}>
             <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
             <Modal
