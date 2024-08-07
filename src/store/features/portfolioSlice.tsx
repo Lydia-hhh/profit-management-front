@@ -157,7 +157,15 @@ export const activity=createAsyncThunk("activity",async(userInput:any)=>{
         alert("server error, please contact developer")
     }
 })
-
+export const klineData=createAsyncThunk("portfolio/klineData",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.KlineData(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err);
+        alert("server error, please contact developer");
+    }
+})
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{

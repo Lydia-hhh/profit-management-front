@@ -189,3 +189,14 @@ export function AddProduct({
         });
     });
 }
+export function KlineData({item_id,time_range}:any){
+    return new Promise((resolve,reject)=>{
+        request.get(api.portfolioApi.KLINE_DATA,{
+            params:{item_id,time_range}
+        }).then((res)=>{
+            resolve(res);
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
