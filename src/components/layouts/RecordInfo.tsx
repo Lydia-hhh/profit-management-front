@@ -36,6 +36,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   const [pieOption, setPieOption] = useState<any>(null);
   const chartRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
 
   const fetchRecords = () => {
     try {
@@ -45,7 +46,10 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
                 const info = res.data['statistical_info']
                 setStatisticalInfo(res.data['statistical_info']);
                 if(info)
+                {
                     setPieOption(getPieOption(info.category,"Portfolio Breakdown","The percentage of your portfolio that is invested in different asset types."));
+                    setSelectedItemIndex(0);
+                }
             }
         })
     } catch (error) {
@@ -62,7 +66,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     },
     {
         text: subtitle,
-        left: '20%',
+        left: '0%',
         top: '85%',
         textStyle: {
           fontSize: 14,
@@ -96,6 +100,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
 
   const handleListItemClick = (index: number) => {
     setLoading(true);
+    setSelectedItemIndex(index);
     let data: PieChartDataItem[] = [];
     let title;
     let subtitle;
@@ -119,7 +124,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         case 3:
           data = statisticalInfo.trailingPE;
           title = 'P/E ratio';
-          subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.\nLow: ratio less than 10.\nMedium: ratio 10-20.\nHigh: ratio greater than 20."
+          subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low \ncompared to other stocks.\nLow: ratio less than 10.\nMedium: ratio 10-20.\nHigh: ratio greater than 20."
           break;
         default:
           data = [];
@@ -158,7 +163,8 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
           bordered
           dataSource={statisticalInfo.list_data}
           renderItem={(item, index) => (
-            <List.Item onClick={() => handleListItemClick(index)}>
+            <List.Item onClick={() => handleListItemClick(index)}
+            style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
               {item}
             </List.Item>
           )}
