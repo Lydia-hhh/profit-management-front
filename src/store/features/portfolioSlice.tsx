@@ -4,7 +4,7 @@ import { RootState } from "..";
 const initialState={
     add_item:true,
     active_key:null,
-    selectedSubRecordIds:null,
+    selectedSubRecordIds:[],
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{

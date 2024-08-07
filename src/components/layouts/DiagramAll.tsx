@@ -8,7 +8,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import { UserOutlined } from '@ant-design/icons';
 import {useAppSelector} from "../../store/hooks";
 
-function DiagramAll({ portfolio_id }: any) {
+function DiagramAll() {
   const [timePrice, settimePrice] = useState<any[]>([]);
   const [disabled, setdisabled] = useState<string>("all")
   const [loading, setloading] = useState<boolean>(false);
@@ -21,13 +21,16 @@ function DiagramAll({ portfolio_id }: any) {
   };
   const getDiagramAll = (time_range: any) => {
     let data: any[] = [];
+    const records_id = selectedSubRecordIds
+    if(records_id.length===0){
+      return;
+    }
     setdisabled(time_range)
     setloading(true);
-    let records_id = selectedSubRecordIds==null?"[2]":selectedSubRecordIds
-    console.log("ids: "+records_id)
     dispatch(diagramAll({ records_id, time_range }) as any).then(unwrapResult).then((res: any) => {
       setdisabled("all")
       setloading(false);
+      console.log("records_id: ",records_id);
       if (res && res.code == 200) {
         for (let i = 0; i < res.data.length; i++) {
           data.push([Date.parse(res.data[i].time), res.data[i].price])
@@ -81,13 +84,15 @@ function DiagramAll({ portfolio_id }: any) {
     },
   ];
 
+  // useEffect(() => {
+  //   settimePrice([]);
+  //   getDiagramAll(time_range);
+  // }, [])
+
   useEffect(() => {
     settimePrice([]);
     getDiagramAll(time_range);
-  }, [])
-  useEffect(() => {
-    settimePrice([]);
-    getDiagramAll(time_range);
+    console.log("selectedSubRecordIds: ",selectedSubRecordIds)
   }, [selectedSubRecordIds])
   return (
     <div style={{width:'100%'}}>

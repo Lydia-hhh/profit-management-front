@@ -12,13 +12,11 @@ function Login() {
     };
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
         navigate("/")
 
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-        console.log('Failed:', errorInfo);
     };
 
 

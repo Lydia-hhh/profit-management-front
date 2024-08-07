@@ -66,21 +66,16 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
 
   useEffect(() => {
     const date = selectedDate;
-    console.log("buy_date1"+date)
-    console.log("buy_date_p_id"+portfolio_id)
     if (date && item_id) {
       const buy_date = date.format('YYYY-MM-DD');
-      console.log("buy_date"+buy_date)
       dispatch(getProductHistoryPrice({ item_id, buy_date }) as any)
         .then((action: any) => {
           const payload = action.payload as OpenPriceResponse;
           const { price } = payload.data;
-          console.log("get price",price)
           if (getProductHistoryPrice.fulfilled.match(action)) {
             const payload = action.payload as OpenPriceResponse;
             const { price } = payload.data;
             setHistoryPrice(price);
-            console.log("get price",price)
             form.setFieldsValue({ price: history_price });
           } else {
             message.error('Failed to fetch historical price');

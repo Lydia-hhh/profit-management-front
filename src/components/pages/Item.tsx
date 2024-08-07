@@ -9,7 +9,6 @@ import { Card, Row, Col, Button } from "antd";
 function Item(){
     const [params]=useSearchParams();
     const item_id=params.get("item_id");
-    console.log("item_id: ",item_id)
     const [stockData, setStockData] = useState<StockData | null>(null);
     const [comInfo, setComInfo] = useState<ComInfo | null>(null);
     const dispatch = useDispatch();
@@ -61,13 +60,10 @@ function Item(){
             dispatch(getProductDetail({ item_id }) as any)
                 .then((action: any) => {
                     if (getProductDetail.fulfilled.match(action)) {
-                        console.log("payload"+action.payload)
-                        // setProductDetail(action.payload as ProductDetail);
                         const payload = action.payload as ProductDetail
                         const { stockData, comInfo } = payload.data;
                         setStockData(stockData);
                         setComInfo(comInfo);
-                        console.log("STockDaa: "+stockData.average_volume)
                     }
                 })
                 .catch((err: any) => {

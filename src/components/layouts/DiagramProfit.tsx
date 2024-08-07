@@ -8,7 +8,7 @@ import { unwrapResult } from '@reduxjs/toolkit';
 import BarChart from './BarChart';
 import {useAppSelector} from "../../store/hooks";
 
-function DiagramProfit({portfolio_id}:any){
+function DiagramProfit(){
     const [timePrice,settimePrice]=useState<any[]>([]);
     const [disabled,setdisabled]=useState<string>("all")
     const [loading,setloading]=useState<boolean>(false);
@@ -22,10 +22,12 @@ function DiagramProfit({portfolio_id}:any){
     };
     const getDiagramProfit=(time_range:any)=>{
         let data:any[]=[];
+        const records_id = selectedSubRecordIds
+        if(records_id.length===0){
+          return;
+        }
         setdisabled(time_range)
         setloading(true)
-        let records_id = selectedSubRecordIds==null?"[2]":selectedSubRecordIds
-        console.log("ids: "+records_id)
         dispatch(diagramProfit({records_id,time_range}) as any).then(unwrapResult).then((res:any)=>{
           setdisabled("all")
           setloading(false)
@@ -63,12 +65,10 @@ function DiagramProfit({portfolio_id}:any){
         disabled:!(disabled==="all"||disabled==="5y")
       },
     ];
-
-
-    useEffect(()=>{
-        settimePrice([]);
-        getDiagramProfit(time_range);
-    },[])
+  //   useEffect(()=>{
+  //     settimePrice([]);
+  //     getDiagramProfit(time_range);
+  // },[])
 
     useEffect(() => {
         settimePrice([]);

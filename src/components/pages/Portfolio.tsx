@@ -1,20 +1,27 @@
-import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, Modal, Space, Tabs, TabsProps } from "antd";
+import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, Modal, Space, Spin, Tabs, TabsProps } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
-import { portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem } from "../../store/features/portfolioSlice";
+import { change_selected_list, portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
 import NewsPortfolio from "../layouts/NewsPortfolio";
 import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
-import { DeleteOutlined, DownOutlined, EllipsisOutlined } from "@ant-design/icons";
-import { useAppSelector } from "../../store/hooks";
+import { DeleteOutlined, DownOutlined, EllipsisOutlined, LoadingOutlined } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import RecordInfo from "../layouts/RecordInfo";
+import AddEntryModal from "../layouts/AddEntryModal";
+import SearchComponent from "../layouts/SearchComponent";
 
 function Portfolio() {
     const dispatch = useDispatch();
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+    const sliceDispatch = useAppDispatch();
+
     const [activeKey, setActiveKey] = useState(undefined);
     const [tapitems, settapItems] = useState<any[] | undefined>([]);
     const [open, setOpen] = useState(false);
@@ -22,19 +29,36 @@ function Portfolio() {
     const [portfolioId, setportfolioId] = useState<any>(null);
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const [portfolios, setportfolios] = useState<any[]>([])
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const { TabPane } = Tabs;
     const add_item = useAppSelector(selectAddItem);
     const active_key = useAppSelector(selectActiveKey);
+    const [loading, setLoading] = useState<boolean>(false);
+    const showSearchModal = () => {
+        setIsSearchModalVisible(true);
+    };
+
+    const handleSearchCancel = () => {
+        setIsSearchModalVisible(false);
+    };
+    const handleSearchSelect = async (item: any) => {
+        try {
+            setIsSearchModalVisible(false);
+            setSelectedItemId(item.item_id);
+            setIsModalVisible(true);
+        } catch (error) {
+            console.error('Failed to use item:', error);
+        }
+    };
+    const handleAddRecord = () => {
+        setIsModalVisible(true);
+    };
+
 
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
-        setSelectedPortfolioId(key);
     };
     const onChangeRecord = (key: string) => {
-        console.log(key);
     };
     const hasRecords = async ({ portfolio_id }: any) => {
         const res = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
@@ -48,19 +72,16 @@ function Portfolio() {
     };
 
     const getItems = async (active: any) => {
+        setLoading(true);
         const portfolios: any[] = await getPortfolioList();
         const result: any[] = await Promise.all(portfolios.map(async (portfolio: any) => {
             const flag: any = await hasRecords({ portfolio_id: portfolio.portfolio_id });
-            console.log("portfolio_id: ", portfolio.portfolio_id)
-            console.log("portfolio_name: ", portfolio.name)
-            console.log("has_record: ", flag)
             return {
                 portfolio_id: portfolio.portfolio_id,
                 portfolio_name: portfolio.name,
                 has_record: flag
             };
         }));
-
         const _items: any[] = result.map((item: any) => {
             return {
                 key: item.portfolio_id,
@@ -75,6 +96,7 @@ function Portfolio() {
             setActiveKey(active);
         }
         settapItems(_items);
+        setLoading(false);
         return _items;
     }
 
@@ -92,7 +114,7 @@ function Portfolio() {
     const getTabNode = (has_record: any, portfolio_id: any) => {
         if (has_record) {
             return (
-                <div>
+                <Flex style={{width:'100%'}} vertical>
                     <Flex style={{ width: '100%' }} justify="flex-end">
                         <Dropdown onOpenChange={() => { setportfolioId(portfolio_id) }} menu={{ items }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
@@ -102,11 +124,18 @@ function Portfolio() {
                             </a>
                         </Dropdown>
                     </Flex>
-                    <DiagramAll portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <RecordInfo portfolio_id={portfolio_id} />
+                    <Flex style={{ width: '100%' }} align="center">
+                        <Flex vertical style={{width:'75%'}}>
+                            <DiagramAll />
+                            <div style={{height:'100px'}}></div>
+                            <DiagramProfit />
+                        </Flex>
+                        <Flex style={{width:'25%'}}>
+                            <RecordInfo portfolio_id={portfolio_id} />
+                        </Flex>
+                        
+                    </Flex>
+                    <div style={{height:'50px'}}></div>
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
                             <Record portfolio_id={portfolio_id} />
@@ -120,7 +149,7 @@ function Portfolio() {
                         </TabPane>
 
                     </Tabs>
-                </div>
+                </Flex>
             )
         }
         return (
@@ -142,20 +171,11 @@ function Portfolio() {
                     }
                 >
                 </Empty>
-                <RecordInfo portfolio_id={portfolio_id} />
-                <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
-                    <TabPane tab="Records" key="1">
-                        <Record portfolio_id={portfolio_id} />
-                    </TabPane>
-                    你可以在这里添加其他TabPane
-                    <TabPane tab="Activity" key="2">
-                        <Activity portfolio_id={portfolio_id} />
-                    </TabPane>
-                    <TabPane tab="News" key="3">
-                        <NewsPortfolio portfolio_id={portfolio_id} />
-                    </TabPane>
+                <div style={{ height: '20px' }}></div>
+                <Flex style={{ width: '100%' }} align="center" justify="center">
+                    <Button type="primary" onClick={showSearchModal}>Create New Portfolio</Button>
+                </Flex>
 
-                </Tabs>
             </div>
         )
     }
@@ -179,20 +199,6 @@ function Portfolio() {
         }
     };
 
-    const _items: TabsProps['items'] = portfolios.map(portfolio => {
-        return {
-            key: portfolio.portfolio_id,
-            label: portfolio.name,
-            children:
-                <div>
-                    <DiagramAll portfolio_id={portfolio.portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio.portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <PieChart portfolio_id={portfolio.portfolio_id} />
-                </div>
-        }
-    });
     const showModal = () => {
         setOpen(true);
     };
@@ -201,14 +207,12 @@ function Portfolio() {
     }
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
     const handleDeleteCancel = () => {
         setDeleteopen(false);
     }
     const handleDeleteOk = (portfolio_id: any) => {
-        console.log("p_id: ", portfolio_id)
         setConfirmLoading(false);
         dispatch(portfolioDelete({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
             if (res && res.code == 200) {
@@ -220,7 +224,6 @@ function Portfolio() {
     }
 
     const onFinish = (values: any) => {
-        console.log('Success:', values);
         setConfirmLoading(true);
         const portfolio_name = values.portfolio_name;
         dispatch(portfolioPost({ portfolio_name }) as any).then(unwrapResult).then(async (res: any) => {
@@ -236,7 +239,6 @@ function Portfolio() {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
     };
     useEffect(() => {
         getItems(null);
@@ -246,49 +248,67 @@ function Portfolio() {
         getItems(activeKey);
     }, [add_item])
     return (
-        
-        <div style={{ width: '90%', marginLeft: '5%' }}>
-            <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
-            <Modal
-                title="Create a New Investment Portfolio"
-                open={open}
-                confirmLoading={confirmLoading}
-                footer=""
-                closable={false}
-            >
-                <Form
-                    onFinishFailed={onFinishFailed}
-                    onFinish={onFinish}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 18 }}
-                    form={form}
+        <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
+            <div style={{ width: '100%'}}>
+                <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
+                <Modal
+                    title="Create a New Investment Portfolio"
+                    open={open}
+                    confirmLoading={confirmLoading}
+                    footer=""
+                    closable={false}
                 >
-                    <Form.Item
-                        name="portfolio_name"
-                        label="Portfolio Name"
-                        rules={[{
-                            required: true,
-                            message: 'Please enter the name of the investment portfolio'
-                        }]}>
-                        <Input placeholder="Please enter the name of the investment portfolio" showCount maxLength={255} minLength={1}></Input>
+                    <Form
+                        onFinishFailed={onFinishFailed}
+                        onFinish={onFinish}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 18 }}
+                        form={form}
+                    >
+                        <Form.Item
+                            name="portfolio_name"
+                            label="Portfolio Name"
+                            rules={[{
+                                required: true,
+                                message: 'Please enter the name of the investment portfolio'
+                            }]}>
+                            <Input placeholder="Please enter the name of the investment portfolio" showCount maxLength={255} minLength={1}></Input>
 
-                    </Form.Item>
-                    <Form.Item wrapperCol={{ offset: 16, span: 9 }}>
-                        <Button style={{ marginRight: '30px' }} onClick={handleCancel}>Cancel</Button>
-                        <Button htmlType="submit" type="primary">OK</Button>
-                    </Form.Item>
+                        </Form.Item>
+                        <Form.Item wrapperCol={{ offset: 16, span: 9 }}>
+                            <Button style={{ marginRight: '30px' }} onClick={handleCancel}>Cancel</Button>
+                            <Button htmlType="submit" type="primary">OK</Button>
+                        </Form.Item>
 
-                </Form>
-            </Modal>
-            <Modal
-                open={deleteopen}
-                onOk={() => { handleDeleteOk(portfolioId) }}
-                confirmLoading={confirmLoading}
-                onCancel={handleDeleteCancel}
-            >
-                <span style={{ fontSize: '18px' }}> Do you want to delete this investment portfolio?</span>
-            </Modal>
-        </div>
+                    </Form>
+                </Modal>
+                <Modal
+                    open={deleteopen}
+                    onOk={() => { handleDeleteOk(portfolioId) }}
+                    confirmLoading={confirmLoading}
+                    onCancel={handleDeleteCancel}
+                >
+                    <span style={{ fontSize: '18px' }}> Do you want to delete this investment portfolio?</span>
+                </Modal>
+                <SearchComponent
+                    visible={isSearchModalVisible}
+                    onCancel={handleSearchCancel}
+                    onSelect={handleSearchSelect}
+                    selectedPortfolioId={portfolioId}
+                    onAddSuccess={() => { }}
+                />
+
+                <AddEntryModal
+                    visible={isModalVisible}
+                    onCancel={() => setIsModalVisible(false)}
+                    onAdd={handleAddRecord}
+                    item_id={selectedItemId}
+                    portfolio_id={portfolioId}
+                    onAddSuccess={() => { }}
+                />
+            </div>
+        </Spin>
+
     )
 }
 export default Portfolio;

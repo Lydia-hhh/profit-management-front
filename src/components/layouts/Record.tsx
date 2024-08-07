@@ -78,11 +78,9 @@ function Record({portfolio_id}:any) {
         try {
             setloading(true)
             dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
-                console.log("getRecordList result: ", res)
                 if (res && res.code == 200) {
                     setloading(false)
                     setRecords(res.data['items_list']);
-                    console.log(res.data['items_list'])
 
                     const allSubRecordIds = new Set<number>
                     res.data['items_list'].forEach((item: Record) => {
@@ -90,7 +88,6 @@ function Record({portfolio_id}:any) {
                             allSubRecordIds.add(record.record_id);
                         });
                     });
-                    console.log(allSubRecordIds)
                     setSelectedSubRecordIds(allSubRecordIds);
                     sliceDispatch(change_selected_list(JSON.stringify(Array.from(allSubRecordIds))))
                 }
@@ -109,7 +106,6 @@ function Record({portfolio_id}:any) {
         setSelectedItemId(id);
         setIsModalVisible(true);
         fetchRecords();
-        console.log("I fetch Records!")
     };
 
     const handleDeleteRecord = (item_id: any, e: React.MouseEvent<HTMLElement> | undefined) => {
@@ -128,7 +124,6 @@ function Record({portfolio_id}:any) {
 
     const handleDeleteSubRecord = (record_id: number) => {
         try {
-            console.log("sub_id:"+record_id)
             dispatch(recordDelete({record_id}) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
                     message.success('Record deleted successfully');
@@ -151,7 +146,6 @@ function Record({portfolio_id}:any) {
         setSelectedSubRecordIds(newSelectedSubRecordIds);
         sliceDispatch(change_selected_list(JSON.stringify(Array.from(newSelectedSubRecordIds))))
 
-        console.log('Selected Record IDs:', newSelectedSubRecordIds);
     };
 
     const formatDate = (dateString: string) => {
@@ -277,8 +271,6 @@ function Record({portfolio_id}:any) {
     useEffect(() => {
         // Fetch records from the backend
         fetchRecords();
-        console.log("fetch records")
-        console.log(records)
     }, [portfolio_id]);
 
     const onRowClick = (record: Record) => {

@@ -16,7 +16,6 @@ function Home() {
         { key: 3, label: 'Search' }
     ]
     const getComponent=(key:any)=>{
-        console.log("key: ",key)
         if(key==1){
             setComponent(<div>Home</div>)
         }else if(key==2){
@@ -28,7 +27,6 @@ function Home() {
         }
     }
     useEffect(() => {
-        console.log("render")
         getComponent(2);
     },[])
     const {
@@ -49,7 +47,7 @@ function Home() {
                     style={{ flex: 1, minWidth: 0 }}
                 />
             </Header>
-            <Content style={{ padding: '0 48px' }}>
+            <Content style={{ padding: '0 0' }}>
                 <div
                     style={{
                         background: colorBgContainer,

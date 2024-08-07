@@ -23,12 +23,9 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
   const dispatch = useDispatch();
 
   const handleSearch = async (typeIn: string) => {
-    console.log("User input:", typeIn);
     try {
       const action = await dispatch(fuzzySearchList({ typeIn }) as any);
-      console.log("action:", action);
       if (fuzzySearchList.fulfilled.match(action)) {
-        console.log("Search results:", action.payload);
         const payload = action.payload as { data: SearchResultItem[] };
         setSearchResults(payload.data || []);
       } else {
@@ -60,7 +57,6 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
   };
 
   const handleModalOk = (values: any) => {
-    console.log("Form values:", values);
     setIsModalVisible(false); // close AddEntryModal
     onAddSuccess(); 
   };

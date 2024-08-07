@@ -75,7 +75,7 @@ function BarChart({ timePrice, loading }: any) {
     }, [timePrice])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
-            <div style={{ width: '100%', height: '500px' }} ref={chartRef}></div>
+            <div style={{ width: '100%', height: '400px' }} ref={chartRef}></div>
         </Spin>
     )
 }
