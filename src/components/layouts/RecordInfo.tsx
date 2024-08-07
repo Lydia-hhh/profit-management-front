@@ -1,9 +1,9 @@
 // src/components/RecordTable.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Breadcrumb, Layout, Menu, theme,Alert } from "antd";
+import { Breadcrumb, Layout, Menu, theme, Alert, Flex } from "antd";
 import { Table, Button, message, Modal, Form, Input, InputNumber, Popconfirm, List, Spin } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import { diagramAll, productDelete, recordDelete, recordList } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
@@ -38,41 +38,43 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   const chartRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+  const [infoLoading,setinfoLoading]=useState<boolean>(false);
 
   const fetchRecords = () => {
     try {
-        dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
-            console.log("getRecordList result: ", res)
-            if (res && res.code == 200) {
-                const info = res.data['statistical_info']
-                setStatisticalInfo(res.data['statistical_info']);
-                if(info)
-                {
-                    setPieOption(getPieOption(info.category,"Portfolio Breakdown","The percentage of your portfolio that is invested in different asset types."));
-                    setSelectedItemIndex(0);
-                }
-            }
-        })
+      setinfoLoading(true);
+      dispatch(recordList({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
+        setinfoLoading(false);
+        console.log("getRecordList result: ", res)
+        if (res && res.code == 200) {
+          const info = res.data['statistical_info']
+          setStatisticalInfo(res.data['statistical_info']);
+          if (info) {
+            setPieOption(getPieOption(info.category, "Portfolio Breakdown", "The percentage of your portfolio that is invested in different asset types."));
+            setSelectedItemIndex(0);
+          }
+        }
+      })
     } catch (error) {
-        message.error('Failed to fetch records');
+      message.error('Failed to fetch records');
     }
-    };
+  };
 
 
-  const getPieOption = (data:PieChartDataItem[],title:String|undefined,subtitle:String|undefined) => ({
+  const getPieOption = (data: PieChartDataItem[], title: String | undefined, subtitle: String | undefined) => ({
     backgroundColor: 'transparent',
     title: [{
       text: title,
       left: 'center'
     },
     {
-        text: subtitle,
-        left: '0%',
-        top: '85%',
-        textStyle: {
-          fontSize: 14,
-          color: '#666'
-        }    
+      text: subtitle,
+      left: '0%',
+      top: '85%',
+      textStyle: {
+        fontSize: 14,
+        color: '#666'
+      }
     }
     ],
     tooltip: {
@@ -108,9 +110,9 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     if (statisticalInfo) {
       switch (index) {
         case 0:
-          data = statisticalInfo.category;
+          data = statisticalInfo.category?statisticalInfo.category:[];
           title = "Portfolio Breakdowm";
-          subtitle = "                    The percentage of your portfolio that is invested in different asset types.";
+          subtitle = "The percentage of your portfolio that is invested in different asset types.";
           break;
         case 1:
           data = statisticalInfo.marketCap;
@@ -131,14 +133,14 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
           data = statisticalInfo.sector;
           title = 'Sector concentration';
           subtitle = ""
-          break;          
+          break;
         default:
           data = [];
           title = '';
           subtitle = '';
       }
     }
-    setPieOption(getPieOption(data,title,subtitle));
+    setPieOption(getPieOption(data, title, subtitle));
     setLoading(false);
   };
 
@@ -160,17 +162,19 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   }, [pieOption]);
 
   if (!statisticalInfo) {
-    return null;}
+    return null;
+  }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+    <Spin indicator={<LoadingOutlined spin />} spinning={infoLoading}>
+      <Flex style={{width:'100%',height:'500px'}} align='center' justify='space-between'>
       <div style={{ width: '300px', marginRight: '20px' }}>
         <List
           bordered
           dataSource={statisticalInfo.list_data}
           renderItem={(item, index) => (
             <List.Item onClick={() => handleListItemClick(index)}
-            style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
+              style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
               {item}
             </List.Item>
           )}
@@ -182,40 +186,17 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
           background: 'transparent', // 背景透明
           textAlign: 'center',
           height: '400px',
-          position: 'relative'
+          position: 'relative',
         }}
         ref={chartRef}
       >
         {loading ? <Spin size="large" /> : null}
       </div>
-    </div>
+    </Flex>
+    </Spin>
+    
+
   );
 };
-//   return (
-//     <Layout style={{ minHeight: '100vh' }}>
-//       <Sider width={500} style={{ background: '#fff' }}>
-//         <List
-//           bordered
-//           dataSource={statisticalInfo ? statisticalInfo.list_data : []}
-//           renderItem={(item, index) => (
-//             <List.Item onClick={() => handleListItemClick(index)}>
-//               {item}
-//             </List.Item>
-//           )}
-//         />
-//       </Sider>
-//       <Layout style={{ background: 'transparent' }}>
-//         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-//           <div
-//             style={{ padding: 24, background: '#fff' ,textAlign: 'center', height: '400px' }}
-//             ref={chartRef}
-//           >
-//             {loading ? <Spin size="large" /> : null}
-//           </div>
-//         </Content>
-//       </Layout>
-//     </Layout>
-//   );
-// };
 
 export default RecordInfo;
