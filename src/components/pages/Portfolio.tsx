@@ -11,6 +11,7 @@ import Record from "../layouts/Record";
 import Activity from "../layouts/Activity";
 import { DeleteOutlined, DownOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../store/hooks";
+import RecordInfo from "../layouts/RecordInfo";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -21,6 +22,8 @@ function Portfolio() {
     const [portfolioId, setportfolioId] = useState<any>(null);
     const [deleteopen, setDeleteopen] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const [portfolios, setportfolios] = useState<any[]>([])
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
     const { TabPane } = Tabs;
     const add_item=useAppSelector(selectAddItem);
     const active_key=useAppSelector(selectActiveKey);
@@ -28,6 +31,7 @@ function Portfolio() {
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
+        setSelectedPortfolioId(key);
     };
     const onChangeRecord = (key: string) => {
         console.log(key);
@@ -95,10 +99,6 @@ function Portfolio() {
                             </a>
                         </Dropdown>
                     </Flex>
-                    <DiagramAll portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
-                    <DiagramProfit portfolio_id={portfolio_id} />
-                    <div style={{ height: '50px' }}></div>
                     <PieChart portfolio_id={portfolio_id} />
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
@@ -112,6 +112,11 @@ function Portfolio() {
                             <NewsPortfolio portfolio_id={portfolio_id}/>
                         </TabPane>
                     </Tabs>
+                    <DiagramAll portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+
                 </div>
             )
         }
@@ -134,9 +139,11 @@ function Portfolio() {
                     }
                 >
                 </Empty>
+                <RecordInfo portfolio_id={portfolio_id}/>
                 <Record portfolio_id={portfolio_id} />
                 <Activity portfolio_id={portfolio_id} />
                 <NewsPortfolio portfolio_id={portfolio_id} />
+
             </div>
 
         )
@@ -160,6 +167,21 @@ function Portfolio() {
             showModal();
         }
     };
+
+    const _items: TabsProps['items'] = portfolios.map(portfolio => {
+        return {
+            key: portfolio.portfolio_id,
+            label: portfolio.name,
+            children:
+                <div>
+                    <DiagramAll portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <DiagramProfit portfolio_id={portfolio.portfolio_id} />
+                    <div style={{ height: '50px' }}></div>
+                    <PieChart portfolio_id={portfolio.portfolio_id} />
+                </div>
+        }
+    });
     const showModal = () => {
         setOpen(true);
     };

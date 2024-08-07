@@ -1,6 +1,6 @@
 // src/components/RecordTable.tsx
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Modal, Form, Input, InputNumber, Popconfirm } from 'antd';
+import { Table, Button, message, Checkbox, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import {diagramAll, productDelete, recordDelete, recordList} from "../../store/features/portfolioSlice";
@@ -18,6 +18,8 @@ function Record({portfolio_id}:any) {
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
     const navigate=useNavigate();
+    const [selectedSubRecordIds, setSelectedSubRecordIds] = useState<Set<number>>(new Set());
+
 
     const handleSearchSelect = async (item: any) => {
         try {
@@ -67,8 +69,15 @@ function Record({portfolio_id}:any) {
             dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
                 console.log("getRecordList result: ", res)
                 if (res && res.code == 200) {
-                    setRecords(res.data);
-                    console.log(res.data)
+                    setRecords(res.data['items_list']);
+                    console.log(res.data['items_list'])
+                    const allSubRecordIds = new Set<number>(
+                        res.data['items_list'].Map((record: Record) =>
+                            record.records.map((subRecord: SubRecord) => subRecord.record_id)
+                        )
+                    );
+                    setSelectedSubRecordIds(allSubRecordIds);
+                    localStorage.setItem("selectedSubRecordIds",JSON.stringify(Array.from(allSubRecordIds)));
                 }
             })
         } catch (error) {
@@ -115,6 +124,19 @@ function Record({portfolio_id}:any) {
         } catch (error) {
             message.error('Failed to delete record');
         }
+    };
+
+    const handleSubRecordSelectChange = (record: Record, subRecord: SubRecord, checked: boolean) => {
+        const newSelectedSubRecordIds = new Set(selectedSubRecordIds);
+        if (checked) {
+            newSelectedSubRecordIds.add(subRecord.record_id);
+        } else {
+            newSelectedSubRecordIds.delete(subRecord.record_id);
+        }
+        setSelectedSubRecordIds(newSelectedSubRecordIds);
+        localStorage.setItem("selectedSubRecordIds",JSON.stringify(Array.from(newSelectedSubRecordIds)));
+
+        console.log('Selected Record IDs:', newSelectedSubRecordIds);
     };
 
     const formatDate = (dateString: string) => {
@@ -184,45 +206,58 @@ function Record({portfolio_id}:any) {
         }
     ];
 
-    const subColumns: ColumnsType<SubRecord> = [
-        { title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date',
-            render: (text) => (
-                formatDate(text)
-            ),
-        },
-        { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' },
-        { title: 'Amount', dataIndex: 'amount', key: 'amount' },
-        { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
-            render: (text) => (
-                <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
-                    {text}
-                </span>
-            ),},
-        { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
-            render: (text) => {
-                const value = parseFloat(text);
-                return (
-                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
-                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+    const expandedRowRender = (parentRecord: Record) => {
+        const subColumns: ColumnsType<SubRecord> = [
+            {
+                title: 'Show',
+                key: 'select',
+                render: (text: any, subRecord: SubRecord) => (
+                    <Checkbox
+                        checked={selectedSubRecordIds.has(subRecord.record_id)}
+                        onChange={(e) => handleSubRecordSelectChange(parentRecord, subRecord, e.target.checked)}
+                    />
+                ),
+            },
+            { title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date',
+                render: (text) => (
+                    formatDate(text)
+                ),
+            },
+            { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' },
+            { title: 'Amount', dataIndex: 'amount', key: 'amount' },
+            { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
+                render: (text) => (
+                    <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
+                        {text}
                     </span>
-                );
-            },},
-        { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
-        {
-            title: 'Actions',
-            key: 'actions',
-            render: (text, subRecord) => (
-                <span>
-                  <Popconfirm
-                      title="Sure to delete?"
-                      onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
-                  >
-                    <Button icon={<DeleteOutlined />} />
-                  </Popconfirm>
-                </span>
-            )
-        }
-    ];
+                ),},
+            { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
+                render: (text) => {
+                    const value = parseFloat(text);
+                    return (
+                        <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
+                          {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                        </span>
+                    );
+                },},
+            { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price' },
+            {
+                title: 'Actions',
+                key: 'actions',
+                render: (text, subRecord) => (
+                    <span>
+                      <Popconfirm
+                          title="Sure to delete?"
+                          onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
+                      >
+                        <Button icon={<DeleteOutlined />} />
+                      </Popconfirm>
+                    </span>
+                )
+            }
+        ];
+        return <Table columns={subColumns} dataSource={parentRecord.records} pagination={false} rowKey="record_id"/>;
+    };
 
     useEffect(() => {
         // Fetch records from the backend
@@ -250,19 +285,10 @@ function Record({portfolio_id}:any) {
             <Table
                 columns={columns}
                 dataSource={records}
-                expandable={{
-                    expandedRowRender: (record) => (
-                        <Table
-                            columns={subColumns}
-                            dataSource={record.records}
-                            pagination={false}
-                            rowKey="record_id"
-                        />
-                    )
-                }}
+                expandable={{ expandedRowRender }}
                 rowKey="item_id"
                 onRow={(record) => ({
-                    onClick: () => onRowClick(record),
+                    onDoubleClick: () => onRowClick(record),
                 })}
             />
             <AddEntryModal

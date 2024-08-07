@@ -166,6 +166,24 @@ export const klineData=createAsyncThunk("portfolio/klineData",async(userInput:an
         alert("server error, please contact developer");
     }
 })
+export const getProductHistoryPrice=createAsyncThunk("portfolio/getProductHistoryPrice",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.ProductHistoryPrice(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
+export const getProductDetail=createAsyncThunk("portfolio/getProductDetail",async(userInput:any)=>{
+    try{
+        const res=await service.portfolioService.ProductDetail(userInput);
+        return res;
+    }catch(err:any){
+        console.log(err)
+        alert("server error, please contact developer")
+    }
+})
 const portfolioSlice=createSlice({
     name:'portfolioSlice',initialState,
     reducers:{

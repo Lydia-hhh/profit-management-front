@@ -2,10 +2,10 @@ import api from '../api';
 import request from "../utils/request";
 
 
-export function Diagram_All({ portfolio_id, time_range }: any) {
+export function Diagram_All({ record_id, time_range }: any) {
     return new Promise((resolve, reject) => {
         request.get(api.portfolioApi.DIAGRAM_ALL, {
-            params: { portfolio_id, time_range }
+            params: { record_id, time_range }
         }).then((res) => {
             resolve(res);
         }).catch((err) => {
@@ -13,13 +13,13 @@ export function Diagram_All({ portfolio_id, time_range }: any) {
         })
     })
 }
-export function Diagram_Single({item_id,time_range}:any){
-    return new Promise((resolve,reject)=>{
-        request.get(api.portfolioApi.DIAGRAM_SINGLE,{
-            params:{item_id,time_range}
-        }).then((res)=>{
+export function Diagram_Single({ item_id, time_range }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.DIAGRAM_SINGLE, {
+            params: { item_id, time_range }
+        }).then((res) => {
             resolve(res);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
@@ -64,11 +64,11 @@ export function Portfolio_Post({ portfolio_name }: any) {
         })
     })
 }
-export function Portfolio_Delete({portfolio_id}:any){
-    return new Promise((resolve,reject)=>{
-        request.delete(api.portfolioApi.PORTFOLIO+"/"+portfolio_id).then((res)=>{
+export function Portfolio_Delete({ portfolio_id }: any) {
+    return new Promise((resolve, reject) => {
+        request.delete(api.portfolioApi.PORTFOLIO + "/" + portfolio_id).then((res) => {
             resolve(res);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
@@ -138,24 +138,24 @@ export function Activity({ portfolio_id }: any) {
         })
     })
 }
-export function FuzzySearch_list({typeIn}:any){
-    return new Promise((resolve,reject)=>{
-        request.get(api.portfolioApi.PRODUCTS_SEARCH,{
-            params:{typeIn}
-        }).then((res)=>{
+export function FuzzySearch_list({ typeIn }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.PRODUCTS_SEARCH, {
+            params: { typeIn }
+        }).then((res) => {
             resolve(res);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
 }
-export function ProductInfo({item_id}:any){
-    return new Promise((resolve,reject)=>{
-        request.get(api.portfolioApi.PRODUCTS_INFO,{
-            params:{item_id}
-        }).then((res)=>{
+export function ProductInfo({ item_id }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.PRODUCTS_INFO, {
+            params: { item_id }
+        }).then((res) => {
             resolve(res);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
@@ -181,21 +181,44 @@ export function AddProduct({
             price,
             currency
         })
-        .then(response => {
-            resolve(response.data);
-        })
-        .catch(error => {
-            reject(error);
-        });
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                reject(error);
+            });
     });
 }
-export function KlineData({item_id,time_range}:any){
-    return new Promise((resolve,reject)=>{
-        request.get(api.portfolioApi.KLINE_DATA,{
-            params:{item_id,time_range}
-        }).then((res)=>{
+export function KlineData({ item_id, time_range }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.KLINE_DATA, {
+            params: { item_id, time_range }
+        }).then((res) => {
             resolve(res);
-        }).catch((err)=>{
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}
+export function ProductHistoryPrice({ item_id, buy_date }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.PRODUCTS_HISTORYPRICE, {
+            params: { item_id, buy_date }
+        }).then((res) => {
+            resolve(res);
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}
+
+export function ProductDetail({ item_id }: any) {
+    return new Promise((resolve, reject) => {
+        request.get(api.portfolioApi.PRODUCTS_DETAIL, {
+            params: { item_id }
+        }).then((res) => {
+            resolve(res);
+        }).catch((err) => {
             reject(err);
         })
     })

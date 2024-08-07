@@ -14,3 +14,5 @@ export const PRODUCT_NEWS="/products/news";
 export const ACTIVITY="/activity";
 export const PRODUCTS_ADD="/products";
 export const KLINE_DATA="/kline";
+export const PRODUCTS_HISTORYPRICE="/historyprice"
+export const PRODUCTS_DETAIL="/products/details"
