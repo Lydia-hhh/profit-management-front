@@ -48,7 +48,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
                 setStatisticalInfo(res.data['statistical_info']);
                 if(info)
                 {
-                    setPieOption(getPieOption(info.category,"Portfolio Breakdown","The percentage of your portfolio that is invested in different asset types."));
+                    setPieOption(getPieOption(info.category?info.category:[],"Portfolio Breakdown","The percentage of your portfolio that is invested in different asset types."));
                     setSelectedItemIndex(0);
                 }
             }
@@ -108,27 +108,27 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     if (statisticalInfo) {
       switch (index) {
         case 0:
-          data = statisticalInfo.category;
+          data = statisticalInfo.category?statisticalInfo.category:[];
           title = "Portfolio Breakdowm";
           subtitle = "                    The percentage of your portfolio that is invested in different asset types.";
           break;
         case 1:
-          data = statisticalInfo.marketCap;
+          data = statisticalInfo.marketCap?statisticalInfo.marketCap:[]
           title = 'Market Cap';
           subtitle = "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares.\nSmall company: market cap below $2B.\nMedium company: market cap $2B - $10B.\nLarge company: market cap above $10B.";
           break;
         case 2:
-          data = statisticalInfo.dividend_yields;
+          data = statisticalInfo.dividend_yields?statisticalInfo.dividend_yields:[];
           title = 'Dividend Yield';
           subtitle = "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price.\nLow: ratio less than 1%.\nMedium: ratio 1%-3%.\nHigh: ratio greater than 3%."
           break;
         case 3:
-          data = statisticalInfo.trailingPE;
+          data = statisticalInfo.trailingPE?statisticalInfo.trailingPE:[];
           title = 'P/E ratio';
           subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low \ncompared to other stocks.\nLow: ratio less than 10.\nMedium: ratio 10-20.\nHigh: ratio greater than 20."
           break;
         case 4:
-          data = statisticalInfo.sector;
+          data = statisticalInfo.sector?statisticalInfo.sector:[];
           title = 'Sector concentration';
           subtitle = ""
           break;          
