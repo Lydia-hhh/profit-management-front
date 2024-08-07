@@ -1,20 +1,19 @@
 import { useEffect,useState } from "react";
 import DiagramSingle from "../layouts/DiagramSingle";
 import NewsItem from "../layouts/NewsItem";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams,useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { getProductDetail } from "../../store/features/portfolioSlice"
-import { useAppDispatch } from '../../store/hooks';
-import { Card, Row, Col } from "antd";
+import { Card, Row, Col, Button } from "antd";
 
 function Item(){
     const [params]=useSearchParams();
     const item_id=params.get("item_id");
     console.log("item_id: ",item_id)
-    const [productDetail, setProductDetail] = useState<ProductDetail | null>(null);
     const [stockData, setStockData] = useState<StockData | null>(null);
     const [comInfo, setComInfo] = useState<ComInfo | null>(null);
     const dispatch = useDispatch();
+    const navigate = useNavigate(); 
 
     interface StockData {
         currency:string;
@@ -80,6 +79,13 @@ function Item(){
 
     return (
         <div style={containerStyle}>
+            <Button 
+                type="link" 
+                onClick={() => navigate(-1)} 
+                style={{ marginBottom: '16px', padding: 0, fontSize: '16px' }}
+            >
+                &lt; Back
+            </Button>
             <div>{item_id}</div>
             <div style={{ height: '15px' }}></div>
             <Row gutter={[16, 16]}>
@@ -94,12 +100,12 @@ function Item(){
                             <p><strong>Currency:</strong> {stockData.currency}</p>
                             <p><strong>Previous Close:</strong> {stockData.previous_close}</p>
                             <p><strong>Open:</strong> {stockData.open}</p>
-                            <p><strong>TDay Price Range:</strong> {stockData.day_low} ~ {stockData.day_high}</p>
+                            <p><strong>Day Price Range:</strong> {stockData.day_low} ~ {stockData.day_high}</p>
                             <p><strong>52-Week Price Range:</strong> {stockData.fifty_two_week_low} ~ {stockData.fifty_two_week_high}</p>
                             <p><strong>Market Cap:</strong> {stockData.market_cap}</p>
                             <p><strong>Average Volume:</strong> {stockData.average_volume}</p>
                             <p><strong>Trailing P/E:</strong> {stockData.trailing_pe}</p>
-                            <p><strong>Dividend Yield:</strong> {stockData.dividend_yield}</p>
+                            {/* <p><strong>Dividend Yield:</strong> {stockData.dividend_yield}</p> */}
                             <p><strong>Exchange:</strong> {stockData.exchange}</p>
                         </Card>
                     )}
