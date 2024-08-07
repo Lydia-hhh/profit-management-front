@@ -1,8 +1,8 @@
 // src/components/RecordTable.tsx
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Checkbox, Popconfirm } from 'antd';
+import {Table, Button, message, Checkbox, Popconfirm, Spin} from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined} from '@ant-design/icons';
 import {
     change_add_item, change_selected_list,
     diagramAll,
@@ -29,6 +29,7 @@ function Record({portfolio_id}:any) {
     const navigate=useNavigate();
     const [selectedSubRecordIds, setSelectedSubRecordIds] = useState<Set<number>>(new Set());
     const sliceDispatch=useAppDispatch();
+    const [loading,setloading]=useState<boolean>(false);
 
     const handleSearchSelect = async (item: any) => {
         try {
@@ -75,9 +76,11 @@ function Record({portfolio_id}:any) {
 
     const fetchRecords = () => {
         try {
+            setloading(true)
             dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
                 console.log("getRecordList result: ", res)
                 if (res && res.code == 200) {
+                    setloading(false)
                     setRecords(res.data['items_list']);
                     console.log(res.data['items_list'])
 
@@ -284,33 +287,36 @@ function Record({portfolio_id}:any) {
 
     return (
         <div>
-            <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
-                                + Add Item
-            </Button>
-            <SearchComponent
-                visible={isSearchModalVisible}
-                onCancel={handleSearchCancel}
-                onSelect={handleSearchSelect}
-                selectedPortfolioId={portfolio_id}
-                onAddSuccess={fetchRecords}
-            />
-            <Table
-                columns={columns}
-                dataSource={records}
-                expandable={{ expandedRowRender }}
-                rowKey="item_id"
-                onRow={(record) => ({
-                    onDoubleClick: () => onRowClick(record),
-                })}
-            />
-            <AddEntryModal
-                visible={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
-                onAdd={handleAddRecord}
-                item_id={selectedItemId}
-                portfolio_id={portfolio_id}
-                onAddSuccess={fetchRecords}
-            />
+            <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
+                <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
+                    + Add Item
+                </Button>
+                <SearchComponent
+                    visible={isSearchModalVisible}
+                    onCancel={handleSearchCancel}
+                    onSelect={handleSearchSelect}
+                    selectedPortfolioId={portfolio_id}
+                    onAddSuccess={fetchRecords}
+                />
+                <Table
+                    columns={columns}
+                    dataSource={records}
+                    expandable={{ expandedRowRender }}
+                    rowKey="item_id"
+                    onRow={(record) => ({
+                        onDoubleClick: () => onRowClick(record),
+                    })}
+                />
+                <AddEntryModal
+                    visible={isModalVisible}
+                    onCancel={() => setIsModalVisible(false)}
+                    onAdd={handleAddRecord}
+                    item_id={selectedItemId}
+                    portfolio_id={portfolio_id}
+                    onAddSuccess={fetchRecords}
+                />
+            </Spin>
+
         </div>
     );
 
