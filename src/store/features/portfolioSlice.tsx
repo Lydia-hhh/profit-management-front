@@ -3,8 +3,18 @@ import service from './../../service';
 import { RootState } from "..";
 const initialState={
     add_item:true,
-    active_key:null,
+    active_key:undefined,
     selectedSubRecordIds:[],
+    records:[],
+    deleted:true,
+    statistical_info:{
+        total_property:"0",
+        total_return:"0",
+        total_return_rate:"0",
+        daily_return:"0",
+        daily_return_rate:"0"
+
+    }
 };
 export const diagramAll=createAsyncThunk("portfolio/diagramAll",async(userInput:any)=>{
     try{
@@ -196,11 +206,25 @@ const portfolioSlice=createSlice({
         },
         change_selected_list:(state,action:PayloadAction<any>)=>{
             state.selectedSubRecordIds=action.payload;
+        },
+        set_records:(state,action:PayloadAction<any>)=>{
+            state.records=action.payload;
+        },
+        delete_record:(state)=>{
+            state.deleted=!state.deleted;
+        },
+        set_statistical_info:(state,action:PayloadAction<any>)=>{
+            state.statistical_info=action.payload;
+            console.log("statistical_info: ",state.statistical_info)
         }
+
     }
 })
-export const {change_add_item,set_active_key,change_selected_list}=portfolioSlice.actions;
+export const {change_add_item,set_active_key,change_selected_list,set_records,delete_record,set_statistical_info}=portfolioSlice.actions;
 export const selectAddItem=(state:RootState)=>state.portfolioReducer.add_item;
 export const selectActiveKey=(state:RootState)=>state.portfolioReducer.active_key;
 export const selectSelectedList=(state:RootState)=>state.portfolioReducer.selectedSubRecordIds;
+export const selectRecords=(state:RootState)=>state.portfolioReducer.records;
+export const selectDelete=(state:RootState)=>state.portfolioReducer.deleted;
+export const selectStatisticalInfo=(state:RootState)=>state.portfolioReducer.statistical_info;
 export default portfolioSlice.reducer;

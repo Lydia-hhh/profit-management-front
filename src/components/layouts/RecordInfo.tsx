@@ -3,11 +3,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Breadcrumb, Layout, Menu, theme, Alert, Flex } from "antd";
 import { Table, Button, message, Modal, Form, Input, InputNumber, Popconfirm, List, Spin } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
-import { diagramAll, productDelete, recordDelete, recordList } from "../../store/features/portfolioSlice";
+import { PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { diagramAll, productDelete, recordDelete, recordList, selectStatisticalInfo } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import * as echarts from 'echarts';
+import classNames from 'classnames';
+import { useAppSelector } from '../../store/hooks';
 
 
 const { Content, Sider } = Layout;
@@ -32,7 +34,7 @@ interface Statistical {
 }
 
 const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
-  const subtitles=[
+  const subtitles = [
     'The percentage of your portfolio that is\ninvested in different asset types.',
     "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares. Small company: market cap below $2B. Medium company: market cap $2B - $10B. Large company: market cap above $10B.",
     "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price. Low: ratio less than 1%. Medium: ratio 1%-3%. High: ratio greater than 3%.",
@@ -45,24 +47,24 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   const chartRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
-  const [infoLoading,setinfoLoading]=useState<boolean>(false);
-  const [subtitle,setsubtitle]=useState<any>(subtitles[0]);
-
+  const [infoLoading, setinfoLoading] = useState<boolean>(false);
+  const [subtitle, setsubtitle] = useState<any>(subtitles[0]);
+  const [value, setValue] = useState<any>(190);
+  const statistical_info = useAppSelector(selectStatisticalInfo);
   const fetchRecords = () => {
     try {
-        setinfoLoading(true)
-        dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
-          setinfoLoading(false)
-            if (res && res.code == 200) {
-                const info = res.data['statistical_info']
-                setStatisticalInfo(res.data['statistical_info']);
-                if(info)
-                {
-                    setPieOption(getPieOption(info.category?info.category:[],"Portfolio Breakdown","The percentage of your portfolio that is invested in different asset types."));
-                    setSelectedItemIndex(0);
-                }
-            }
-        })
+      setinfoLoading(true)
+      dispatch(recordList({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
+        setinfoLoading(false)
+        if (res && res.code == 200) {
+          const info = res.data['statistical_info']
+          setStatisticalInfo(res.data['statistical_info']);
+          if (info) {
+            setPieOption(getPieOption(info.category ? info.category : [], "Portfolio Breakdown", "The percentage of your portfolio that is invested in different asset types."));
+            setSelectedItemIndex(0);
+          }
+        }
+      })
     } catch (error) {
       message.error('Failed to fetch records');
     }
@@ -74,7 +76,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     title: [{
       text: title,
       top: 20,
-      left:'center'
+      left: 'center'
     },
     {
       text: '',
@@ -117,31 +119,30 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     let title;
     let subtitle;
     setsubtitle(subtitles[index]);
-    console.log("subtitle: ",subtitles[index])
     if (statisticalInfo) {
       switch (index) {
         case 0:
-          data = statisticalInfo.category?statisticalInfo.category:[];
+          data = statisticalInfo.category ? statisticalInfo.category : [];
           title = "Portfolio Breakdowm";
           subtitle = 'The percentage of your portfolio that is\ninvested in different asset types.';
           break;
         case 1:
-          data = statisticalInfo.marketCap?statisticalInfo.marketCap:[]
+          data = statisticalInfo.marketCap ? statisticalInfo.marketCap : []
           title = 'Market Cap';
           subtitle = "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares. Small company: market cap below $2B. Medium company: market cap $2B - $10B. Large company: market cap above $10B.";
           break;
         case 2:
-          data = statisticalInfo.dividend_yields?statisticalInfo.dividend_yields:[];
+          data = statisticalInfo.dividend_yields ? statisticalInfo.dividend_yields : [];
           title = 'Dividend Yield';
           subtitle = "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price. Low: ratio less than 1%. Medium: ratio 1%-3%. High: ratio greater than 3%."
           break;
         case 3:
-          data = statisticalInfo.trailingPE?statisticalInfo.trailingPE:[];
+          data = statisticalInfo.trailingPE ? statisticalInfo.trailingPE : [];
           title = 'P/E ratio';
           subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.Low: ratio less than 10.Medium: ratio 10-20.High: ratio greater than 20."
           break;
         case 4:
-          data = statisticalInfo.sector?statisticalInfo.sector:[];
+          data = statisticalInfo.sector ? statisticalInfo.sector : [];
           title = 'Sector concentration';
           subtitle = ""
           break;
@@ -174,40 +175,73 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   }
 
   return (
-  <Flex style={{width:'100%',height:'800px'}} vertical justify='space-between'>
-    <Spin style={{width:'100%',height:'800px'}} indicator={<LoadingOutlined spin />} spinning={infoLoading}>
-      <div style={{}}>
-        <List
-          bordered
-          dataSource={statisticalInfo.list_data}
-          renderItem={(item, index) => (
-            <List.Item onClick={() => handleListItemClick(index)}
-              style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
-              {item}
-            </List.Item>
-          )}
-        />
-      </div>
+    <Flex style={{ width: '100%', height: '900px' }} vertical justify='space-between'>
+      <Flex style={{ width: '100%', height: '100px' }} justify='space-between'>
+        <div>
+          <span>Daily Return</span>
+
+          <div style={{ width: '160px', height: '80px', textAlign: 'center', marginTop: '10px' }} className={classNames('value', { positive: Number(statistical_info?.daily_return) > 0, negative:  Number(statistical_info?.daily_return) < 0, zero:  Number(statistical_info?.daily_return) == 0 })}>
+            <div style={{marginTop:'15px'}}>
+              <span style={{ fontSize: '15px' }}>
+                {/* {value} {value >= 0 ? (value == 0 ? '-' : '▲') : '▼'} */}
+                {Number(statistical_info?.daily_return) >= 0 ? '+' : ''}  {statistical_info?.daily_return}
+              </span><br />
+              <span style={{ fontSize: '15px' }}>
+                {Number(statistical_info?.daily_return_rate) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.daily_return_rate}%
+              </span>
+            </div>
+
+          </div>
+        </div>
+        <div>
+          <span>Total Revenue</span>
+          <div style={{ width: '160px', height: '80px', textAlign: 'center', marginTop: '10px' }} className={classNames('value', { positive: Number(statistical_info?.total_return) > 0, negative: Number(statistical_info?.total_return) < 0, zero: Number(statistical_info?.total_return) == 0 })}>
+            <div style={{marginTop:'15px'}}>
+              <span style={{ fontSize: '15px' }}>
+                {Number(statistical_info?.total_return) >= 0 ? '+' : ''}  {statistical_info?.total_return}
+              </span><br />
+              <span style={{ fontSize: '15px' }}>
+                {Number(statistical_info?.total_return_rate) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.total_return_rate}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+      </Flex>
+      <Spin style={{ width: '100%', height: '300px' }} indicator={<LoadingOutlined spin />} spinning={infoLoading}>
+        <div style={{}}>
+          <List
+            bordered
+            dataSource={statisticalInfo.list_data}
+            renderItem={(item, index) => (
+              <List.Item onClick={() => handleListItemClick(index)}
+                style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
+                {item}
+              </List.Item>
+            )}
+          />
+        </div>
       </Spin>
-      <div style={{width:'100%',height:'500px'}}>
+      <div style={{ width: '100%', height: '500px' }}>
         <div
-        style={{
-          background: 'transparent', 
-          width:'100%',
-          height:'500px',
-          wordWrap:'break-word'
-          
-        }}
-        ref={chartRef}
-      >
-        {loading ? <Spin size="large" /> : null}
-      </div>
-      <div style={{wordWrap:'break-word'}}>{subtitle}</div>
+          style={{
+            background: 'transparent',
+            width: '100%',
+            height: '500px',
+            wordWrap: 'break-word'
+
+          }}
+          ref={chartRef}
+        >
+          {loading ? <Spin size="large" /> : null}
+        </div>
+        <div style={{ wordWrap: 'break-word' }}>{subtitle}</div>
 
       </div>
-      
-  </Flex>
-    
+
+    </Flex>
+
 
   );
 };

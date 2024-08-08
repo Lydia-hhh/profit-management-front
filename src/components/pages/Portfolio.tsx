@@ -1,8 +1,8 @@
-import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, Modal, Space, Spin, Tabs, TabsProps } from "antd";
+import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, message, Modal, Space, Spin, Tabs, TabsProps } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
-import { change_selected_list, portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem } from "../../store/features/portfolioSlice";
+import { change_selected_list, portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem, selectDelete, selectStatisticalInfo, set_records, set_statistical_info } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
@@ -14,12 +14,14 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import RecordInfo from "../layouts/RecordInfo";
 import AddEntryModal from "../layouts/AddEntryModal";
 import SearchComponent from "../layouts/SearchComponent";
+import TotalProperty from "../layouts/TotalProperty";
 
 function Portfolio() {
     const dispatch = useDispatch();
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+    // const [records, setRecords] = useState<any[]>([]);
     const sliceDispatch = useAppDispatch();
 
     const [activeKey, setActiveKey] = useState(undefined);
@@ -31,8 +33,11 @@ function Portfolio() {
     const [form] = Form.useForm();
     const { TabPane } = Tabs;
     const add_item = useAppSelector(selectAddItem);
+    const deleted =useAppSelector(selectDelete);
     const active_key = useAppSelector(selectActiveKey);
+    const statistical_info=useAppSelector(selectStatisticalInfo);
     const [loading, setLoading] = useState<boolean>(false);
+    // const [recordloading, setrecordloading] = useState<boolean>(false);
     const showSearchModal = () => {
         setIsSearchModalVisible(true);
     };
@@ -57,6 +62,7 @@ function Portfolio() {
     const onChange = (key: string) => {
         setportfolioId(key)
         setActiveKey(key as any);
+        fetchRecords(key);
     };
     const onChangeRecord = (key: string) => {
     };
@@ -82,6 +88,13 @@ function Portfolio() {
                 has_record: flag
             };
         }));
+        if(active===null && result.length>0){
+            setportfolioId(result[0].portfolio_id);
+            await fetchRecords(result[0].portfolio_id);
+        }else{
+            setportfolioId(active);
+            await fetchRecords(active);
+        }
         const _items: any[] = result.map((item: any) => {
             return {
                 key: item.portfolio_id,
@@ -114,8 +127,11 @@ function Portfolio() {
     const getTabNode = (has_record: any, portfolio_id: any) => {
         if (has_record) {
             return (
-                <Flex style={{width:'100%'}} vertical>
-                    <Flex style={{ width: '100%' }} justify="flex-end">
+                <Flex style={{ width: '100%' }} vertical>
+                    <Flex style={{ width: '100%' }} justify="space-between">
+                        <div>
+                            <TotalProperty/>
+                        </div>
                         <Dropdown onOpenChange={() => { setportfolioId(portfolio_id) }} menu={{ items }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
                                 <Space>
@@ -123,22 +139,28 @@ function Portfolio() {
                                 </Space>
                             </a>
                         </Dropdown>
+                         
                     </Flex>
                     <Flex style={{ width: '100%' }} align="center">
-                        <Flex vertical style={{width:'75%'}}>
+                        <Flex vertical style={{ width: '75%' }}>
                             <DiagramAll />
-                            <div style={{height:'100px'}}></div>
+                            <div style={{ height: '100px' }}></div>
                             <DiagramProfit />
                         </Flex>
-                        <Flex style={{width:'25%'}}>
+                        <Flex style={{ width: '25%' }}>
                             <RecordInfo portfolio_id={portfolio_id} />
                         </Flex>
-                        
+
                     </Flex>
-                    <div style={{height:'50px'}}></div>
+                    <div style={{ height: '50px' }}></div>
                     <Tabs defaultActiveKey="1" onChange={onChangeRecord}>
                         <TabPane tab="Records" key="1">
-                            <Record portfolio_id={portfolio_id} />
+                            {/* <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
+                                + Add Item
+                            </Button> */}
+                            <Record portfolio_id={portfolio_id}/>
+                            <div>
+                            </div>
                         </TabPane>
                         你可以在这里添加其他TabPane
                         <TabPane tab="Activity" key="2">
@@ -237,19 +259,29 @@ function Portfolio() {
             }
         })
     };
-
+    const fetchRecords = async (portfolio_id:any) => {
+        try {
+            const res: any = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
+            if (res && res.code == 200) {
+                sliceDispatch(set_records(res.data['items_list']))
+                sliceDispatch(set_statistical_info(res.data["statistical_info"]))
+            }
+        } catch (error) {
+            message.error('Failed to fetch records');
+        }
+    };
     const onFinishFailed = (errorInfo: any) => {
     };
     useEffect(() => {
         getItems(null);
     }, [])
     useEffect(() => {
-        setActiveKey(activeKey)
-        getItems(activeKey);
-    }, [add_item])
+        setActiveKey(active_key)
+        getItems(active_key);
+    }, [add_item,deleted])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
-            <div style={{ width: '100%'}}>
+            <div style={{ width: '100%' }}>
                 <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
                 <Modal
                     title="Create a New Investment Portfolio"
@@ -295,7 +327,7 @@ function Portfolio() {
                     onCancel={handleSearchCancel}
                     onSelect={handleSearchSelect}
                     selectedPortfolioId={portfolioId}
-                    onAddSuccess={() => { }}
+                    onAddSuccess={()=>{fetchRecords(portfolioId)}}
                 />
 
                 <AddEntryModal
@@ -304,7 +336,7 @@ function Portfolio() {
                     onAdd={handleAddRecord}
                     item_id={selectedItemId}
                     portfolio_id={portfolioId}
-                    onAddSuccess={() => { }}
+                    onAddSuccess={()=>{fetchRecords(portfolioId)}}
                 />
             </div>
         </Spin>

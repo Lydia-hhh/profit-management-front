@@ -1,36 +1,38 @@
 // src/components/RecordTable.tsx
 import React, { useState, useEffect } from 'react';
-import {Table, Button, message, Checkbox, Popconfirm, Spin} from 'antd';
+import { Table, Button, message, Checkbox, Popconfirm, Spin } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import {PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined} from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import {
     change_add_item, change_selected_list,
+    delete_record,
     diagramAll,
     productDelete,
     recordDelete,
     recordList,
+    selectRecords,
     set_active_key
 } from "../../store/features/portfolioSlice";
-import {unwrapResult} from "@reduxjs/toolkit";
-import {useDispatch} from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
 import classNames from 'classnames';
 import SearchComponent from "../layouts/SearchComponent";
 import AddEntryModal from '../layouts/AddEntryModal';
 import { useNavigate } from 'react-router-dom';
-import {useAppDispatch} from "../../store/hooks";
-import {all} from "axios";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { all } from "axios";
 
-function Record({portfolio_id}:any) {
+function Record({ portfolio_id }: any) {
     const dispatch = useDispatch();
-    const [records, setRecords] = useState<Record[]>([]);
+    // const [records, setRecords] = useState<Record[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const [selectedSubRecordIds, setSelectedSubRecordIds] = useState<Set<number>>(new Set());
-    const sliceDispatch=useAppDispatch();
-    const [loading,setloading]=useState<boolean>(false);
-
+    const sliceDispatch = useAppDispatch();
+    // const [loading,setloading]=useState<boolean>(false);
+    const records=useAppSelector(selectRecords);
     const handleSearchSelect = async (item: any) => {
         try {
             setIsSearchModalVisible(false);
@@ -74,47 +76,49 @@ function Record({portfolio_id}:any) {
         stock_price: number;
     }
 
-    const fetchRecords = () => {
-        try {
-            setloading(true)
-            dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
-                if (res && res.code == 200) {
-                    setloading(false)
-                    setRecords(res.data['items_list']);
+    // const fetchRecords = () => {
+    //     try {
+    //         setloading(true)
+    //         dispatch(recordList({portfolio_id}) as any).then(unwrapResult).then((res: any) => {
+    //             if (res && res.code == 200) {
+    //                 setloading(false)
+    //                 setRecords(res.data['items_list']);
 
-                    const allSubRecordIds = new Set<number>
-                    res.data['items_list'].forEach((item: Record) => {
-                        item.records.forEach((record: SubRecord) => {
-                            allSubRecordIds.add(record.record_id);
-                        });
-                    });
-                    setSelectedSubRecordIds(allSubRecordIds);
-                    sliceDispatch(change_selected_list(JSON.stringify(Array.from(allSubRecordIds))))
-                }
-            })
-        } catch (error) {
-            message.error('Failed to fetch records');
-        }
-    };
+    //                 const allSubRecordIds = new Set<number>
+    //                 res.data['items_list'].forEach((item: Record) => {
+    //                     item.records.forEach((record: SubRecord) => {
+    //                         allSubRecordIds.add(record.record_id);
+    //                     });
+    //                 });
+    //                 setSelectedSubRecordIds(allSubRecordIds);
+    //                 sliceDispatch(change_selected_list(JSON.stringify(Array.from(allSubRecordIds))))
+    //             }
+    //         })
+    //     } catch (error) {
+    //         message.error('Failed to fetch records');
+    //     }
+    // };
 
     const handleAddRecord = () => {
         setIsModalVisible(true);
     };
 
-    const handleAddRecordWithId = (id:any, event: React.MouseEvent<HTMLElement>) => {
+    const handleAddRecordWithId = (id: any, event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
         setSelectedItemId(id);
         setIsModalVisible(true);
-        fetchRecords();
+        // fetchRecords();
     };
+
 
     const handleDeleteRecord = (item_id: any, e: React.MouseEvent<HTMLElement> | undefined) => {
         e?.stopPropagation();
         try {
-            dispatch(productDelete({portfolio_id,item_id}) as any).then(unwrapResult).then((res: any) => {
+            dispatch(productDelete({ portfolio_id, item_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
                     message.success('Record deleted successfully');
-                    fetchRecords();
+                    handleRecordDeleteSuccess();
+                    // fetchRecords();
                 }
             })
         } catch (error) {
@@ -124,10 +128,11 @@ function Record({portfolio_id}:any) {
 
     const handleDeleteSubRecord = (record_id: number) => {
         try {
-            dispatch(recordDelete({record_id}) as any).then(unwrapResult).then((res: any) => {
+            dispatch(recordDelete({ record_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
                     message.success('Record deleted successfully');
-                    fetchRecords();
+                    // fetchRecords();
+                    handleRecordDeleteSuccess();
                 }
             })
 
@@ -145,8 +150,18 @@ function Record({portfolio_id}:any) {
         }
         setSelectedSubRecordIds(newSelectedSubRecordIds);
         sliceDispatch(change_selected_list(JSON.stringify(Array.from(newSelectedSubRecordIds))))
-
     };
+
+    const handleRecordDeleteSuccess=()=>{
+        console.log("handleRecordDeleteSuccess")
+        sliceDispatch(set_active_key(portfolio_id));
+        sliceDispatch(delete_record());
+    }
+    const handleRecordAddSuccess=()=>{
+        console.log("handleRecordAddSuccess")
+        sliceDispatch(set_active_key(portfolio_id))
+        sliceDispatch(change_add_item())
+    }
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -161,59 +176,70 @@ function Record({portfolio_id}:any) {
         { title: 'Item Name', dataIndex: 'item_name', key: 'item_name' },
         { title: 'Current Price', dataIndex: 'current_price', key: 'current_price' },
         { title: 'Currency', dataIndex: 'currency', key: 'currency' },
-        { title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return' ,
+        {
+            title: 'Daily Return', dataIndex: 'daily_return', key: 'daily_return',
             render: (text) => (
                 <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
                     {new Intl.NumberFormat().format(text)}
                 </span>
-            ),},
-        { title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate',
+            ),
+        },
+        {
+            title: 'Daily Return Rate', dataIndex: 'daily_return_rate', key: 'daily_return_rate',
             render: (text) => {
                 const value = parseFloat(text);
                 return (
-                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
-                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0 })}>
+                        {text} {value >= 0 ? (value == 0 ? '-' : '▲') : '▼'}
                     </span>
                 );
-            },},
-        { title: 'Total Amount', dataIndex: 'total_amount', key: 'total_amount',
+            },
+        },
+        {
+            title: 'Total Amount', dataIndex: 'total_amount', key: 'total_amount',
             render: (text) => new Intl.NumberFormat().format(text),
-         },
-        { title: 'Total Return', dataIndex: 'total_return', key: 'total_return' ,
+        },
+        {
+            title: 'Total Return', dataIndex: 'total_return', key: 'total_return',
             render: (text) => (
                 <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
                     {new Intl.NumberFormat().format(text)}
                 </span>
-            ),},
-        { title: 'Total Return Rate', dataIndex: 'total_return_rate', key: 'total_return_rate' ,
+            ),
+        },
+        {
+            title: 'Total Return Rate', dataIndex: 'total_return_rate', key: 'total_return_rate',
             render: (text) => {
                 const value = parseFloat(text);
                 return (
-                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
-                      {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                    <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0 })}>
+                        {text} {value >= 0 ? (value == 0 ? '-' : '▲') : '▼'}
                     </span>
                 );
-            },},
-        { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
-            render: (text) => new Intl.NumberFormat().format(text), },
+            },
+        },
+        {
+            title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
+            render: (text) => new Intl.NumberFormat().format(text),
+        },
         {
             title: 'Actions',
             key: 'actions',
             width: 100,
             render: (text, record) => (
                 <span>
-          <Button icon={<PlusOutlined />} onClick={(e) => handleAddRecordWithId(record.item_id,e)}/>
-            <Popconfirm
-                title="Sure to delete?"
-                onConfirm={(e) => {
-                    e?.stopPropagation();
-                    handleDeleteRecord(record.item_id, e);
-                }}
-                onCancel={(e) => e?.stopPropagation()}
-            >
-            <Button icon={<DeleteOutlined />} onClick={(e) => e?.stopPropagation()} />
-          </Popconfirm>
-        </span>
+                    <Button icon={<PlusOutlined />} onClick={(e) => handleAddRecordWithId(record.item_id, e)} />
+                    <Popconfirm
+                        title="Sure to delete?"
+                        onConfirm={(e) => {
+                            e?.stopPropagation();
+                            handleDeleteRecord(record.item_id, e);
+                        }}
+                        onCancel={(e) => e?.stopPropagation()}
+                    >
+                        <Button icon={<DeleteOutlined />} onClick={(e) => e?.stopPropagation()} />
+                    </Popconfirm>
+                </span>
             )
         }
     ];
@@ -230,62 +256,82 @@ function Record({portfolio_id}:any) {
                     />
                 ),
             },
-            { title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date',
+            {
+                title: 'Buy Date', dataIndex: 'buy_date', key: 'buy_date',
                 render: (text) => (
                     formatDate(text)
                 ),
             },
-            { title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price' ,
-                render: (text) => new Intl.NumberFormat().format(text),},
-            { title: 'Amount', dataIndex: 'amount', key: 'amount',
-                render: (text) => new Intl.NumberFormat().format(text), },
-            { title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
+            {
+                title: 'Buy Price', dataIndex: 'buy_price', key: 'buy_price',
+                render: (text) => new Intl.NumberFormat().format(text),
+            },
+            {
+                title: 'Amount', dataIndex: 'amount', key: 'amount',
+                render: (text) => new Intl.NumberFormat().format(text),
+            },
+            {
+                title: 'Revenue', dataIndex: 'revenue', key: 'revenue',
                 render: (text) => (
                     <span className={classNames('font', { positive: text >= 0, negative: text < 0 })}>
                         {new Intl.NumberFormat().format(text)}
                     </span>
-                ),},
-            { title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate' ,
+                ),
+            },
+            {
+                title: 'Revenue Rate', dataIndex: 'revenue_rate', key: 'revenue_rate',
                 render: (text) => {
                     const value = parseFloat(text);
                     return (
-                        <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0})}>
-                          {text} {value >= 0 ? (value == 0?'-':'▲') : '▼'}
+                        <span className={classNames('value', { positive: value > 0, negative: value < 0, zero: value == 0 })}>
+                            {text} {value >= 0 ? (value == 0 ? '-' : '▲') : '▼'}
                         </span>
                     );
-                },},
-            { title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
-                render: (text) => new Intl.NumberFormat().format(text), },
+                },
+            },
+            {
+                title: 'Stock Price', dataIndex: 'stock_price', key: 'stock_price',
+                render: (text) => new Intl.NumberFormat().format(text),
+            },
             {
                 title: 'Actions',
                 key: 'actions',
                 render: (text, subRecord) => (
                     <span>
-                      <Popconfirm
-                          title="Sure to delete?"
-                          onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
-                      >
-                        <Button icon={<DeleteOutlined />} />
-                      </Popconfirm>
+                        <Popconfirm
+                            title="Sure to delete?"
+                            onConfirm={() => handleDeleteSubRecord(subRecord.record_id)}
+                        >
+                            <Button icon={<DeleteOutlined />} />
+                        </Popconfirm>
                     </span>
                 )
             }
         ];
-        return <Table columns={subColumns} dataSource={parentRecord.records} pagination={false} rowKey="record_id"/>;
+        return <Table columns={subColumns} dataSource={parentRecord.records} pagination={false} rowKey="record_id" />;
     };
-
+    
     useEffect(() => {
         // Fetch records from the backend
-        fetchRecords();
-    }, [portfolio_id]);
+        // fetchRecords();
+        console.log("my_records: ",records)
+        const allSubRecordIds = new Set<number>
+        records.forEach((item: Record) => {
+            item.records.forEach((record: SubRecord) => {
+                allSubRecordIds.add(record.record_id);
+            });
+        });
+        setSelectedSubRecordIds(allSubRecordIds);
+        sliceDispatch(change_selected_list(JSON.stringify(Array.from(allSubRecordIds))))
+    }, [records]);
 
     const onRowClick = (record: Record) => {
-        navigate('/item?item_id='+record.item_id)
+        navigate('/item?item_id=' + record.item_id)
     };
 
     return (
         <div>
-            <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
+            <Spin indicator={<LoadingOutlined spin />} spinning={false}>
                 <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
                     + Add Item
                 </Button>
@@ -294,7 +340,7 @@ function Record({portfolio_id}:any) {
                     onCancel={handleSearchCancel}
                     onSelect={handleSearchSelect}
                     selectedPortfolioId={portfolio_id}
-                    onAddSuccess={fetchRecords}
+                    onAddSuccess={handleRecordAddSuccess}
                 />
                 <Table
                     columns={columns}
@@ -311,7 +357,7 @@ function Record({portfolio_id}:any) {
                     onAdd={handleAddRecord}
                     item_id={selectedItemId}
                     portfolio_id={portfolio_id}
-                    onAddSuccess={fetchRecords}
+                    onAddSuccess={handleRecordAddSuccess}
                 />
             </Spin>
 

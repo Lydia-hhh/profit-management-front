@@ -30,7 +30,6 @@ function DiagramAll() {
     dispatch(diagramAll({ records_id, time_range }) as any).then(unwrapResult).then((res: any) => {
       setdisabled("all")
       setloading(false);
-      console.log("records_id: ",records_id);
       if (res && res.code == 200) {
         for (let i = 0; i < res.data.length; i++) {
           data.push([Date.parse(res.data[i].time), res.data[i].price])
@@ -92,7 +91,7 @@ function DiagramAll() {
   useEffect(() => {
     settimePrice([]);
     getDiagramAll(time_range);
-    console.log("selectedSubRecordIds: ",selectedSubRecordIds)
+    console.log("render all")
   }, [selectedSubRecordIds])
   return (
     <div style={{width:'100%'}}>
