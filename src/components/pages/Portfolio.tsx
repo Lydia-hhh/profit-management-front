@@ -252,10 +252,14 @@ function Portfolio() {
             setOpen(false);
             setConfirmLoading(false);
             if (res && res.code == 200) {
-                const _items: any = await getItems(null);
-                if (_items.length > 0) {
-                    setActiveKey(_items[_items.length - 1].key)
-                }
+                const portfolio_id=res.data?.portfolio_id;
+                setActiveKey(portfolio_id);
+                await getItems(portfolio_id);
+
+                // if (_items.length > 0) {
+                //     setActiveKey(_items[_items.length - 1].key)
+                // }
+                
             }
         })
     };
