@@ -187,7 +187,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
                 {Number(statistical_info?.daily_return) >= 0 ? '+' : ''}  {statistical_info?.daily_return}
               </span><br />
               <span style={{ fontSize: '15px' }}>
-                {Number(statistical_info?.daily_return_rate) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.daily_return_rate}%
+                {Number(statistical_info?.daily_return) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.daily_return_rate}%
               </span>
             </div>
 
@@ -201,7 +201,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
                 {Number(statistical_info?.total_return) >= 0 ? '+' : ''}  {statistical_info?.total_return}
               </span><br />
               <span style={{ fontSize: '15px' }}>
-                {Number(statistical_info?.total_return_rate) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.total_return_rate}%
+                {Number(statistical_info?.total_return) >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}  {statistical_info?.total_return_rate}%
               </span>
             </div>
           </div>
