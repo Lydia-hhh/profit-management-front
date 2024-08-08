@@ -113,6 +113,7 @@ function DiagramAll() {
     }
   }
   useEffect(() => {
+    console.log(selectedSubRecordIds)
     if (selectedSubRecordIds.length === 0) {
       clearClock();
     } else {
