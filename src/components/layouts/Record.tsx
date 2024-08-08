@@ -153,12 +153,10 @@ function Record({ portfolio_id }: any) {
     };
 
     const handleRecordDeleteSuccess=()=>{
-        console.log("handleRecordDeleteSuccess")
         sliceDispatch(set_active_key(portfolio_id));
         sliceDispatch(delete_record());
     }
     const handleRecordAddSuccess=()=>{
-        console.log("handleRecordAddSuccess")
         sliceDispatch(set_active_key(portfolio_id))
         sliceDispatch(change_add_item())
     }

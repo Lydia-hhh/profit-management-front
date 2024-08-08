@@ -205,8 +205,7 @@ const portfolioSlice=createSlice({
             state.active_key=action.payload;
         },
         change_selected_list:(state,action:PayloadAction<any>)=>{
-            console.log(typeof(action.payload))
-            state.selectedSubRecordIds=action.payload;
+            state.selectedSubRecordIds=JSON.parse(action.payload);
         },
         set_records:(state,action:PayloadAction<any>)=>{
             state.records=action.payload;

@@ -24,7 +24,7 @@ function DiagramAll() {
   };
   const getDiagramAll = (time_range: any) => {
     let data: any[] = [];
-    const records_id = selectedSubRecordIds
+    const records_id = JSON.stringify(selectedSubRecordIds)
     if (records_id.length === 0) {
       return;
     }
@@ -113,7 +113,7 @@ function DiagramAll() {
     }
   }
   useEffect(() => {
-    if (selectedSubRecordIds.length === 2) {
+    if (selectedSubRecordIds.length === 0) {
       clearClock();
     } else {
       settimePrice([]);

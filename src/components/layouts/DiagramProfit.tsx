@@ -22,7 +22,7 @@ function DiagramProfit(){
     };
     const getDiagramProfit=(time_range:any)=>{
         let data:any[]=[];
-        const records_id = selectedSubRecordIds
+        const records_id =JSON.stringify(selectedSubRecordIds);
         if(records_id.length===0){
           return;
         }
