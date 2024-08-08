@@ -215,7 +215,6 @@ const portfolioSlice=createSlice({
         },
         set_statistical_info:(state,action:PayloadAction<any>)=>{
             state.statistical_info=action.payload;
-            console.log("statistical_info: ",state.statistical_info)
         }
 
     }

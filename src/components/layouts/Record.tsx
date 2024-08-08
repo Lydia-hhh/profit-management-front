@@ -314,7 +314,6 @@ function Record({ portfolio_id }: any) {
     useEffect(() => {
         // Fetch records from the backend
         // fetchRecords();
-        console.log("my_records: ",records)
         const allSubRecordIds = new Set<number>
         records.forEach((item: Record) => {
             item.records.forEach((record: SubRecord) => {
