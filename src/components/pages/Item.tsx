@@ -4,8 +4,9 @@ import NewsItem from "../layouts/NewsItem";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { getProductDetail } from "../../store/features/portfolioSlice";
-import { Card, Row, Col, Button } from "antd";
+import { Card, Row, Col, Button, Layout, theme, Menu } from "antd";
 import { AreaChartOutlined, BuildOutlined } from '@ant-design/icons';
+import { Content, Footer, Header } from "antd/es/layout/layout";
 
 function Item() {
     const [params] = useSearchParams();
@@ -14,7 +15,23 @@ function Item() {
     const [comInfo, setComInfo] = useState<ComInfo | null>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
-
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
+    const menuitems = [
+        { key: '1', label: 'Home' },
+        { key: '2', label: 'Portfolio' },
+        { key: '3', label: 'Search' }
+    ]
+    const navigateToDest=(key:any)=>{
+        if(key=='1'){
+            navigate('/');
+        }else if(key=='2'){
+            navigate('/portfolio');
+        }else if(key=='3'){
+            navigate('/search');
+        }
+    }
     interface StockData {
         currency: string;
         previous_close: number | null;
@@ -75,7 +92,32 @@ function Item() {
     }, [item_id, dispatch]);
 
     return (
-        <div style={containerStyle}>
+
+<Layout>
+            <Header style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="demo-logo" />
+                <Menu
+                    onSelect={({ item, key, keyPath, selectedKeys, domEvent }: any) => {
+                    navigateToDest(key);
+                    }}
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['2']}
+                    items={menuitems}
+                    style={{ flex: 1, minWidth: 0 }}
+                />
+            </Header>
+            <Content style={{ padding: '0 0' }}>
+                <div
+                    style={{
+                        background: colorBgContainer,
+                        minHeight: 280,
+                        padding: 24,
+                        borderRadius: borderRadiusLG,
+                    }}
+                >
+                    
+                     <div style={containerStyle}>
             <Button 
                 type="link" 
                 onClick={() => navigate(-1)} 
@@ -161,6 +203,12 @@ function Item() {
                 </Col>
             </Row>
         </div>
+                </div>
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>
+            </Footer>
+        </Layout>
+       
     );
 }
 export default Item;
