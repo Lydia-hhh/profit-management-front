@@ -36,9 +36,9 @@ interface Statistical {
 const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
   const subtitles = [
     'The percentage of your portfolio that is\ninvested in different asset types.',
-    "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares. Small company: market cap below $2B. Medium company: market cap $2B - $10B. Large company: market cap above $10B.",
-    "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price. Low: ratio less than 1%. Medium: ratio 1%-3%. High: ratio greater than 3%.",
-    "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.Low: ratio less than 10.Medium: ratio 10-20.High: ratio greater than 20.",
+    "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares.\n Small company: market cap below $2B. \nMedium company: market cap $2B - $10B. \nLarge company: market cap above $10B.",
+    "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price.\n Low: ratio less than 1%. \nMedium: ratio 1%-3%. \nHigh: ratio greater than 3%.",
+    "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.\nLow: ratio less than 10.\nMedium: ratio 10-20.\nHigh: ratio greater than 20.",
     "",
     '']
   const dispatch = useDispatch();
@@ -180,8 +180,8 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         <div>
           <span>Daily Return</span>
 
-          <div style={{ width: '160px', height: '80px', textAlign: 'center', marginTop: '10px' }} className={classNames('value', { positive: Number(statistical_info?.daily_return) > 0, negative:  Number(statistical_info?.daily_return) < 0, zero:  Number(statistical_info?.daily_return) == 0 })}>
-            <div style={{marginTop:'15px'}}>
+          <div style={{ width: '160px', height: '80px', textAlign: 'center', marginTop: '10px' }} className={classNames('value', { positive: Number(statistical_info?.daily_return) > 0, negative: Number(statistical_info?.daily_return) < 0, zero: Number(statistical_info?.daily_return) == 0 })}>
+            <div style={{ marginTop: '15px' }}>
               <span style={{ fontSize: '15px' }}>
                 {/* {value} {value >= 0 ? (value == 0 ? '-' : '▲') : '▼'} */}
                 {Number(statistical_info?.daily_return) >= 0 ? '+' : ''}  {statistical_info?.daily_return}
@@ -196,7 +196,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         <div>
           <span>Total Revenue</span>
           <div style={{ width: '160px', height: '80px', textAlign: 'center', marginTop: '10px' }} className={classNames('value', { positive: Number(statistical_info?.total_return) > 0, negative: Number(statistical_info?.total_return) < 0, zero: Number(statistical_info?.total_return) == 0 })}>
-            <div style={{marginTop:'15px'}}>
+            <div style={{ marginTop: '15px' }}>
               <span style={{ fontSize: '15px' }}>
                 {Number(statistical_info?.total_return) >= 0 ? '+' : ''}  {statistical_info?.total_return}
               </span><br />
@@ -236,7 +236,14 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         >
           {loading ? <Spin size="large" /> : null}
         </div>
-        <div style={{ wordWrap: 'break-word' }}>{subtitle}</div>
+        <div style={{ wordWrap: 'break-word' }}>
+          {subtitle.split('\n').map((line: any, index: any) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </div>
 
       </div>
 
