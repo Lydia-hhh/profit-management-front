@@ -43,25 +43,25 @@ function DiagramProfit(){
     {
       key: '1m',
       label: '1 month',
-      children:<BarChart style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
+      children:<BarChart title={"Daily Return"} style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
       disabled:!(disabled==="all"||disabled==="1m")
     },
     {
         key: '6m',
         label: '6 months',
-        children:<BarChart style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
+        children:<BarChart title={"Daily Return"} style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
         disabled:!(disabled==="all"||disabled==="6m")
       },
       {
         key: '1y',
         label: '1 year',
-        children:<BarChart style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
+        children:<BarChart title={"Daily Return"} style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
         disabled:!(disabled==="all"||disabled==="1y")
       },
       {
         key: '5y',
         label: '5 years',
-        children: <BarChart style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
+        children: <BarChart title={"Daily Return"} style={{with:'100%',height:'100%'}} timePrice={timePrice} loading={loading}/>,
         disabled:!(disabled==="all"||disabled==="5y")
       },
     ];

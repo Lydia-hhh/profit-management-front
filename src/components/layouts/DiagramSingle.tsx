@@ -31,7 +31,7 @@ function DiagramSingle({item_id}:any){
     }
     const getChildrenNode = () => {
       return (
-          <LineChart style={{ with: '100%', height: '100%' }} timePrice={timePrice} loading={loading} />
+          <LineChart title={"Price Trend"}  style={{ with: '100%', height: '100%' }} timePrice={timePrice} loading={loading} />
       )
     }
   

@@ -1,4 +1,4 @@
-import { Empty, Flex, Input, Spin, Tabs, TabsProps } from "antd";
+import { Empty, Flex, Input, Layout, Menu, Spin, Tabs, TabsProps, theme } from "antd";
 import Search from "antd/es/input/Search";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -6,9 +6,28 @@ import { klineData } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import KLine from "../layouts/KLine";
 import { LoadingOutlined } from "@ant-design/icons";
+import { Content, Footer, Header } from "antd/es/layout/layout";
+import { useNavigate } from "react-router-dom";
 
 function SearchItem() {
-
+    const menuitems = [
+        { key: '1', label: 'Home' },
+        { key: '2', label: 'Portfolio' },
+        { key: '3', label: 'Search' }
+    ]
+    const navigate = useNavigate();
+    const navigateToDest=(key:any)=>{
+        if(key=='1'){
+            navigate('/');
+        }else if(key=='2'){
+            navigate('/portfolio');
+        }else if(key=='3'){
+            navigate('/search');
+        }
+    }
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
     const [searchloading, setsearchLoading] = useState<boolean>(false);
     const [value, setValue] = useState<any>('');
     const itemId = useRef<any>('')
@@ -108,15 +127,46 @@ function SearchItem() {
         }
     }
     return (
-        <div>
-            <Flex style={{ width: '100%' }} justify='center' align='center'>
-                <Search onSearch={searchItem} value={value} onChange={handleChange} style={{ width: '60%' }} placeholder="input search text" enterButton="Search" size="large" loading={searchloading} />
-            </Flex>
-            <div style={{ height: '50px' }}></div>
-            <div style={{ width: '100%' }}>
-                <Tabs activeKey={active} items={items} onChange={onChange} />
-            </div>
-        </div>
+        <Layout>
+            <Header style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="demo-logo" />
+                <Menu
+                    onSelect={({ item, key, keyPath, selectedKeys, domEvent }: any) => {
+                        //    getComponent(key);
+                        navigateToDest(key);
+                    }}
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['3']}
+                    items={menuitems}
+                    style={{ flex: 1, minWidth: 0 }}
+                />
+            </Header>
+            <Content style={{ padding: '0 0' }}>
+                <div
+                    style={{
+                        background: colorBgContainer,
+                        minHeight: 280,
+                        padding: 24,
+                        borderRadius: borderRadiusLG,
+                    }}
+                >
+                    <div>
+                        <Flex style={{ width: '100%' }} justify='center' align='center'>
+                            <Search onSearch={searchItem} value={value} onChange={handleChange} style={{ width: '60%' }} placeholder="input search text" enterButton="Search" size="large" loading={searchloading} />
+                        </Flex>
+                        <div style={{ height: '50px' }}></div>
+                        <div style={{ width: '100%' }}>
+                            <Tabs activeKey={active} items={items} onChange={onChange} />
+                        </div>
+                    </div>
+
+                </div>
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>
+            </Footer>
+        </Layout>
+
     )
 }
 export default SearchItem;

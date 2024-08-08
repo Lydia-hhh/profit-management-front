@@ -1,4 +1,4 @@
-import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, MenuProps, message, Modal, Space, Spin, Tabs, TabsProps } from "antd";
+import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, Layout, Menu, MenuProps, message, Modal, Space, Spin, Tabs, TabsProps, theme } from "antd";
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
@@ -15,6 +15,8 @@ import RecordInfo from "../layouts/RecordInfo";
 import AddEntryModal from "../layouts/AddEntryModal";
 import SearchComponent from "../layouts/SearchComponent";
 import TotalProperty from "../layouts/TotalProperty";
+import { Content, Footer, Header } from "antd/es/layout/layout";
+import { useNavigate } from "react-router-dom";
 
 function Portfolio() {
     const dispatch = useDispatch();
@@ -23,7 +25,7 @@ function Portfolio() {
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
     // const [records, setRecords] = useState<any[]>([]);
     const sliceDispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const [activeKey, setActiveKey] = useState(undefined);
     const [tapitems, settapItems] = useState<any[] | undefined>([]);
     const [open, setOpen] = useState(false);
@@ -33,11 +35,28 @@ function Portfolio() {
     const [form] = Form.useForm();
     const { TabPane } = Tabs;
     const add_item = useAppSelector(selectAddItem);
-    const deleted =useAppSelector(selectDelete);
+    const deleted = useAppSelector(selectDelete);
     const active_key = useAppSelector(selectActiveKey);
-    const statistical_info=useAppSelector(selectStatisticalInfo);
+    const statistical_info = useAppSelector(selectStatisticalInfo);
     const [loading, setLoading] = useState<boolean>(false);
     // const [recordloading, setrecordloading] = useState<boolean>(false);
+    const menuitems = [
+        { key: '1', label: 'Home' },
+        { key: '2', label: 'Portfolio' },
+        { key: '3', label: 'Search' }
+    ]
+    const navigateToDest=(key:any)=>{
+        if(key=='1'){
+            navigate('/');
+        }else if(key=='2'){
+            navigate('/portfolio');
+        }else if(key=='3'){
+            navigate('/search');
+        }
+    }
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
     const showSearchModal = () => {
         setIsSearchModalVisible(true);
     };
@@ -88,10 +107,10 @@ function Portfolio() {
                 has_record: flag
             };
         }));
-        if(active===null && result.length>0){
+        if (active === null && result.length > 0) {
             setportfolioId(result[0].portfolio_id);
             await fetchRecords(result[0].portfolio_id);
-        }else{
+        } else {
             setportfolioId(active);
             await fetchRecords(active);
         }
@@ -130,7 +149,7 @@ function Portfolio() {
                 <Flex style={{ width: '100%' }} vertical>
                     <Flex style={{ width: '100%' }} justify="space-between">
                         <div>
-                            <TotalProperty/>
+                            <TotalProperty />
                         </div>
                         <Dropdown onOpenChange={() => { setportfolioId(portfolio_id) }} menu={{ items }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
@@ -139,7 +158,7 @@ function Portfolio() {
                                 </Space>
                             </a>
                         </Dropdown>
-                         
+
                     </Flex>
                     <Flex style={{ width: '100%' }} align="center">
                         <Flex vertical style={{ width: '75%' }}>
@@ -158,9 +177,7 @@ function Portfolio() {
                             {/* <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
                                 + Add Item
                             </Button> */}
-                            <Record portfolio_id={portfolio_id}/>
-                            <div>
-                            </div>
+                            <Record portfolio_id={portfolio_id} />
                         </TabPane>
                         你可以在这里添加其他TabPane
                         <TabPane tab="Activity" key="2">
@@ -252,18 +269,18 @@ function Portfolio() {
             setOpen(false);
             setConfirmLoading(false);
             if (res && res.code == 200) {
-                const portfolio_id=res.data?.portfolio_id;
+                const portfolio_id = res.data?.portfolio_id;
                 setActiveKey(portfolio_id);
                 await getItems(portfolio_id);
 
                 // if (_items.length > 0) {
                 //     setActiveKey(_items[_items.length - 1].key)
                 // }
-                
+
             }
         })
     };
-    const fetchRecords = async (portfolio_id:any) => {
+    const fetchRecords = async (portfolio_id: any) => {
         try {
             const res: any = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
             if (res && res.code == 200) {
@@ -280,70 +297,105 @@ function Portfolio() {
         getItems(null);
     }, [])
     useEffect(() => {
-        console.log("add_item: ",add_item);
+        console.log("add_item: ", add_item);
         setActiveKey(active_key)
         getItems(active_key);
-    }, [add_item,deleted])
+    }, [add_item, deleted])
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
-            <div style={{ width: '100%' }}>
-                <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
-                <Modal
-                    title="Create a New Investment Portfolio"
-                    open={open}
-                    confirmLoading={confirmLoading}
-                    footer=""
-                    closable={false}
-                >
-                    <Form
-                        onFinishFailed={onFinishFailed}
-                        onFinish={onFinish}
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 18 }}
-                        form={form}
+            <Layout>
+
+
+                <Header style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className="demo-logo" />
+                    <Menu
+                        onSelect={({ item, key, keyPath, selectedKeys, domEvent }: any) => {
+                            //    getComponent(key);
+                            navigateToDest(key);
+                        }}
+                        theme="dark"
+                        mode="horizontal"
+                        defaultSelectedKeys={['2']}
+                        items={menuitems}
+                        style={{ flex: 1, minWidth: 0 }}
+                    />
+                </Header>
+                <Content style={{ padding: '0 0' }}>
+                    <div
+                        style={{
+                            background: colorBgContainer,
+                            minHeight: 280,
+                            padding: 24,
+                            borderRadius: borderRadiusLG,
+                        }}
                     >
-                        <Form.Item
-                            name="portfolio_name"
-                            label="Portfolio Name"
-                            rules={[{
-                                required: true,
-                                message: 'Please enter the name of the investment portfolio'
-                            }]}>
-                            <Input placeholder="Please enter the name of the investment portfolio" showCount maxLength={255} minLength={1}></Input>
+                        <div style={{ width: '100%' }}>
+                            <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
+                            <Modal
+                                title="Create a New Investment Portfolio"
+                                open={open}
+                                confirmLoading={confirmLoading}
+                                footer=""
+                                closable={false}
+                            >
+                                <Form
+                                    onFinishFailed={onFinishFailed}
+                                    onFinish={onFinish}
+                                    labelCol={{ span: 6 }}
+                                    wrapperCol={{ span: 18 }}
+                                    form={form}
+                                >
+                                    <Form.Item
+                                        name="portfolio_name"
+                                        label="Portfolio Name"
+                                        rules={[{
+                                            required: true,
+                                            message: 'Please enter the name of the investment portfolio'
+                                        }]}>
+                                        <Input placeholder="Please enter the name of the investment portfolio" showCount maxLength={255} minLength={1}></Input>
 
-                        </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 16, span: 9 }}>
-                            <Button style={{ marginRight: '30px' }} onClick={handleCancel}>Cancel</Button>
-                            <Button htmlType="submit" type="primary">OK</Button>
-                        </Form.Item>
+                                    </Form.Item>
+                                    <Form.Item wrapperCol={{ offset: 15, span: 9 }}>
+                                        <Button style={{ marginRight: '25px' }} onClick={handleCancel}>Cancel</Button>
+                                        <Button htmlType="submit" type="primary">OK</Button>
+                                    </Form.Item>
 
-                    </Form>
-                </Modal>
-                <Modal
-                    open={deleteopen}
-                    onOk={() => { handleDeleteOk(portfolioId) }}
-                    confirmLoading={confirmLoading}
-                    onCancel={handleDeleteCancel}
-                >
-                    <span style={{ fontSize: '18px' }}> Do you want to delete this investment portfolio?</span>
-                </Modal>
-                <SearchComponent
-                    visible={isSearchModalVisible}
-                    onCancel={handleSearchCancel}
-                    onSelect={handleSearchSelect}
-                    selectedPortfolioId={portfolioId}
-                    onAddSuccess={()=>{fetchRecords(portfolioId)}}
-                />
+                                </Form>
+                            </Modal>
+                            <Modal
+                                open={deleteopen}
+                                onOk={() => { handleDeleteOk(portfolioId) }}
+                                confirmLoading={confirmLoading}
+                                onCancel={handleDeleteCancel}
+                            >
+                                <span style={{ fontSize: '18px' }}> Do you want to delete this investment portfolio?</span>
+                            </Modal>
+                            <SearchComponent
+                                visible={isSearchModalVisible}
+                                onCancel={handleSearchCancel}
+                                onSelect={handleSearchSelect}
+                                selectedPortfolioId={portfolioId}
+                                onAddSuccess={() => { fetchRecords(portfolioId) }}
+                            />
 
-                <AddEntryModal
-                    visible={isModalVisible}
-                    onCancel={() => setIsModalVisible(false)}
-                    onAdd={handleAddRecord}
-                    item_id={selectedItemId}
-                    portfolio_id={portfolioId}
-                    onAddSuccess={()=>{fetchRecords(portfolioId)}}
-                />
-            </div>
+                            <AddEntryModal
+                                visible={isModalVisible}
+                                onCancel={() => setIsModalVisible(false)}
+                                onAdd={handleAddRecord}
+                                item_id={selectedItemId}
+                                portfolio_id={portfolioId}
+                                onAddSuccess={() => { fetchRecords(portfolioId) }}
+                            />
+                        </div>
+                    </div>
+                </Content>
+                <Footer style={{ textAlign: 'center' }}>
+                </Footer>
+
+            </Layout>
+
+
+
         </Spin>
 
     )

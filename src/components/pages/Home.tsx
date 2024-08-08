@@ -8,6 +8,7 @@ import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import SearchItem from "./SearchItem";
 import HomeContent from '../layouts/HomeContent';
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [component,setComponent]=useState<any>(null)
@@ -16,20 +17,17 @@ function Home() {
         { key: '2', label: 'Portfolio' },
         { key: '3', label: 'Search' }
     ]
-    const getComponent=(key:any)=>{
+    const navigate = useNavigate();
+    const navigateToDest=(key:any)=>{
         if(key=='1'){
-        setComponent(<HomeContent />);
-            // setComponent(<div>Home</div>)
+            navigate('/');
         }else if(key=='2'){
-            setComponent(<Portfolio/>)
+            navigate('/portfolio');
         }else if(key=='3'){
-            setComponent(<SearchItem/>)
-        }else{
-            setComponent(<div>None</div>)
+            navigate('/search');
         }
     }
     useEffect(() => {
-        getComponent('1');
     },[])
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -40,7 +38,7 @@ function Home() {
                 <div className="demo-logo" />
                 <Menu
                     onSelect={({ item, key, keyPath, selectedKeys, domEvent }: any) => {
-                       getComponent(key);
+                    navigateToDest(key);
                     }}
                     theme="dark"
                     mode="horizontal"
@@ -58,7 +56,7 @@ function Home() {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    {component}
+                    <HomeContent/>
                 </div>
             </Content>
             <Footer style={{ textAlign: 'center' }}>

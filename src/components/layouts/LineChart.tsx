@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import * as echarts from 'echarts';
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-function LineChart({ timePrice,loading }: any) {
+function LineChart({ timePrice,loading,title }: any) {
     const chartRef = useRef<any>(null);
     const myChart = useRef<any>(null);
     const initChart = () => {
@@ -21,7 +21,7 @@ function LineChart({ timePrice,loading }: any) {
         let option = {
             title: {
                 left: 'center',
-                text: 'Line Chart'
+                text: title
             },
             tooltip: {
                 trigger: 'axis',

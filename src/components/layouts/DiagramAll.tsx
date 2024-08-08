@@ -40,7 +40,7 @@ function DiagramAll() {
   }
   const getChildrenNode = () => {
     return (
-        <LineChart timePrice={timePrice} loading={loading} />
+        <LineChart title={"Total Property"} timePrice={timePrice} loading={loading} />
     )
   }
 

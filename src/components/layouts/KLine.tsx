@@ -54,6 +54,10 @@ function KLine({ timePrice, loading }: any) {
     const getChart = () => {
         const data = splitData(timePrice);
         const option = {
+            title: {
+                left: 'center',
+                text: "K-Line"
+            },
             animation: false,
             legend: {
                 bottom: 10,

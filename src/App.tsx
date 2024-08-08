@@ -10,6 +10,8 @@ const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import('./components/pages/Login'));
 const Item=React.lazy(()=>import('./components/pages/Item'));
 const Test=React.lazy(()=>import('./components/pages/Test'));
+const Portfolio=React.lazy(()=>import('./components/pages/Portfolio'));
+const SearchItem=React.lazy(()=>import('./components/pages/SearchItem'));
 function App() {
   return (
     <Router>
@@ -19,6 +21,8 @@ function App() {
           <Route path='/login' Component={Login} />
           <Route path='/item' Component={Item}/>
           <Route path='/test' Component={Test}/>
+          <Route path='/portfolio' Component={Portfolio}></Route>
+          <Route path='/search' Component={SearchItem}></Route>
         </Routes>
       </Suspense>
 

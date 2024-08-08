@@ -335,6 +335,7 @@ function Record({ portfolio_id }: any) {
                 <Button type="primary" onClick={showSearchModal} style={{ marginLeft: "10px" }}>
                     + Add Item
                 </Button>
+                <div style={{height:'15px'}}></div>
                 <SearchComponent
                     visible={isSearchModalVisible}
                     onCancel={handleSearchCancel}
