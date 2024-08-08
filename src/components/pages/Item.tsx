@@ -1,21 +1,22 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import DiagramSingle from "../layouts/DiagramSingle";
 import NewsItem from "../layouts/NewsItem";
-import { useSearchParams,useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { getProductDetail } from "../../store/features/portfolioSlice"
+import { getProductDetail } from "../../store/features/portfolioSlice";
 import { Card, Row, Col, Button } from "antd";
+import { AreaChartOutlined, BuildOutlined } from '@ant-design/icons';
 
-function Item(){
-    const [params]=useSearchParams();
-    const item_id=params.get("item_id");
+function Item() {
+    const [params] = useSearchParams();
+    const item_id = params.get("item_id");
     const [stockData, setStockData] = useState<StockData | null>(null);
     const [comInfo, setComInfo] = useState<ComInfo | null>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
 
     interface StockData {
-        currency:string;
+        currency: string;
         previous_close: number | null;
         open: number | null;
         day_low: number | null;
@@ -37,7 +38,7 @@ function Item(){
     }
     
     interface ProductDetail {
-        data:{
+        data: {
             stockData: StockData;
             comInfo: ComInfo;
         }
@@ -60,7 +61,7 @@ function Item(){
             dispatch(getProductDetail({ item_id }) as any)
                 .then((action: any) => {
                     if (getProductDetail.fulfilled.match(action)) {
-                        const payload = action.payload as ProductDetail
+                        const payload = action.payload as ProductDetail;
                         const { stockData, comInfo } = payload.data;
                         setStockData(stockData);
                         setComInfo(comInfo);
@@ -91,45 +92,55 @@ function Item(){
                     <NewsItem item_id={item_id} />
                 </Col>
                 <Col span={8}>
-                {stockData && (
-                    Object.values(stockData).some(value => value !== null) && (
-                        <Card title="Market Data" style={{ marginBottom: '16px' }}>
-                            {stockData.currency && (
-                                <p><strong>Currency:</strong> {stockData.currency}</p>
-                            )}
-                            {stockData.previous_close !== null && (
-                                <p><strong>Previous Close:</strong> {stockData.previous_close}</p>
-                            )}
-                            {stockData.open !== null && (
-                                <p><strong>Open:</strong> {stockData.open}</p>
-                            )}
-                            {(stockData.day_low !== null && stockData.day_high !== null) && (
-                                <p><strong>Day Price Range:</strong> {stockData.day_low} ~ {stockData.day_high}</p>
-                            )}
-                            {(stockData.fifty_two_week_low !== null && stockData.fifty_two_week_high !== null) && (
-                                <p><strong>52-Week Price Range:</strong> {stockData.fifty_two_week_low} ~ {stockData.fifty_two_week_high}</p>
-                            )}
-                            {stockData.market_cap !== null && (
-                                <p><strong>Market Cap:</strong> {stockData.market_cap}</p>
-                            )}
-                            {stockData.average_volume !== null && (
-                                <p><strong>Average Volume:</strong> {stockData.average_volume}</p>
-                            )}
-                            {stockData.trailing_pe !== null && (
-                                <p><strong>Trailing P/E:</strong> {stockData.trailing_pe}</p>
-                            )}
-                            {stockData.dividend_yield !== null && (
-                                <p><strong>Dividend Yield:</strong> {(stockData.dividend_yield * 100).toFixed(2)}%</p>
-                            )}
-                            {stockData.exchange && (
-                                <p><strong>Exchange:</strong> {stockData.exchange}</p>
-                            )}
-                        </Card>
-                    )
-                )}
+                    {stockData && (
+                        Object.values(stockData).some(value => value !== null) && (
+                            <Card title={
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <AreaChartOutlined style={{ marginRight: '8px' }} />
+                                    <span>Market Data</span>
+                                </div>
+                            } style={{ marginBottom: '16px' }}>
+                                {stockData.currency && (
+                                    <p><strong>Currency:</strong> {stockData.currency}</p>
+                                )}
+                                {stockData.previous_close !== null && (
+                                    <p><strong>Previous Close:</strong> {stockData.previous_close}</p>
+                                )}
+                                {stockData.open !== null && (
+                                    <p><strong>Open:</strong> {stockData.open}</p>
+                                )}
+                                {(stockData.day_low !== null && stockData.day_high !== null) && (
+                                    <p><strong>Day Price Range:</strong> {stockData.day_low} ~ {stockData.day_high}</p>
+                                )}
+                                {(stockData.fifty_two_week_low !== null && stockData.fifty_two_week_high !== null) && (
+                                    <p><strong>52-Week Price Range:</strong> {stockData.fifty_two_week_low} ~ {stockData.fifty_two_week_high}</p>
+                                )}
+                                {stockData.market_cap !== null && (
+                                    <p><strong>Market Cap:</strong> {stockData.market_cap}</p>
+                                )}
+                                {stockData.average_volume !== null && (
+                                    <p><strong>Average Volume:</strong> {stockData.average_volume}</p>
+                                )}
+                                {stockData.trailing_pe !== null && (
+                                    <p><strong>Trailing P/E:</strong> {stockData.trailing_pe}</p>
+                                )}
+                                {stockData.dividend_yield !== null && (
+                                    <p><strong>Dividend Yield:</strong> {(stockData.dividend_yield * 100).toFixed(2)}%</p>
+                                )}
+                                {stockData.exchange && (
+                                    <p><strong>Exchange:</strong> {stockData.exchange}</p>
+                                )}
+                            </Card>
+                        )
+                    )}
                     {comInfo && (
                         Object.values(comInfo).some(value => value) && (
-                            <Card title="Company Information">
+                            <Card title={
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <BuildOutlined style={{ marginRight: '8px' }} />
+                                    <span>Company Information</span>
+                                </div>
+                            }>
                                 {comInfo.company_name && (
                                     <p><strong>Company Name:</strong> {comInfo.company_name}</p>
                                 )}
