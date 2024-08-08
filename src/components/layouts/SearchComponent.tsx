@@ -59,6 +59,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
   const handleModalOk = (values: any) => {
     setIsModalVisible(false); // close AddEntryModal
     onAddSuccess(); 
+    onCancel(); // close SearchComponent modal
   };
 
   return (
