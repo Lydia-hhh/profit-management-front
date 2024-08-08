@@ -12,24 +12,24 @@ import HomeContent from '../layouts/HomeContent';
 function Home() {
     const [component,setComponent]=useState<any>(null)
     const items = [
-        { key: 1, label: 'Home' },
-        { key: 2, label: 'Portfolio' },
-        { key: 3, label: 'Search' }
+        { key: '1', label: 'Home' },
+        { key: '2', label: 'Portfolio' },
+        { key: '3', label: 'Search' }
     ]
     const getComponent=(key:any)=>{
-        if(key==1){
+        if(key=='1'){
         setComponent(<HomeContent />);
             // setComponent(<div>Home</div>)
-        }else if(key==2){
+        }else if(key=='2'){
             setComponent(<Portfolio/>)
-        }else if(key==3){
+        }else if(key=='3'){
             setComponent(<SearchItem/>)
         }else{
             setComponent(<div>None</div>)
         }
     }
     useEffect(() => {
-        getComponent(2);
+        getComponent('1');
     },[])
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -44,7 +44,7 @@ function Home() {
                     }}
                     theme="dark"
                     mode="horizontal"
-                    defaultSelectedKeys={['2']}
+                    defaultSelectedKeys={['1']}
                     items={items}
                     style={{ flex: 1, minWidth: 0 }}
                 />
