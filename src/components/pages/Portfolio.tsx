@@ -276,6 +276,7 @@ function Portfolio() {
         getItems(null);
     }, [])
     useEffect(() => {
+        console.log("add_item: ",add_item);
         setActiveKey(active_key)
         getItems(active_key);
     }, [add_item,deleted])

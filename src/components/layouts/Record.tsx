@@ -340,7 +340,7 @@ function Record({ portfolio_id }: any) {
                     onCancel={handleSearchCancel}
                     onSelect={handleSearchSelect}
                     selectedPortfolioId={portfolio_id}
-                    onAddSuccess={handleRecordAddSuccess}
+                    onAddSuccess={()=>{}}
                 />
                 <Table
                     columns={columns}
@@ -357,7 +357,7 @@ function Record({ portfolio_id }: any) {
                     onAdd={handleAddRecord}
                     item_id={selectedItemId}
                     portfolio_id={portfolio_id}
-                    onAddSuccess={handleRecordAddSuccess}
+                    onAddSuccess={()=>{}}
                 />
             </Spin>
 

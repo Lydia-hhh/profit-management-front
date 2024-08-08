@@ -107,8 +107,8 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
         form.resetFields();
         onCancel(); 
         onAddSuccess();
-        sliceDispatch(change_add_item())
         sliceDispatch(set_active_key(portfolio_id))
+        sliceDispatch(change_add_item())
       })
       .catch(() => message.error('Failed to add product'));
 
