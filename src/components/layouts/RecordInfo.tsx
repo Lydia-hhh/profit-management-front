@@ -174,7 +174,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     return null;
   }
 
-  return (
+  return (<Spin style={{ width: '100%', height: '300px' }} indicator={<LoadingOutlined spin />} spinning={infoLoading}>
     <Flex style={{ width: '100%', height: '900px' }} vertical justify='space-between'>
       <Flex style={{ width: '100%', height: '100px' }} justify='space-between'>
         <div>
@@ -209,20 +209,19 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
 
 
       </Flex>
-      <Spin style={{ width: '100%', height: '300px' }} indicator={<LoadingOutlined spin />} spinning={infoLoading}>
-        <div style={{}}>
-          <List
-            bordered
-            dataSource={statisticalInfo.list_data}
-            renderItem={(item, index) => (
-              <List.Item onClick={() => handleListItemClick(index)}
-                style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
-                {item}
-              </List.Item>
-            )}
-          />
-        </div>
-      </Spin>
+      <div style={{}}>
+        <List
+          bordered
+          dataSource={statisticalInfo.list_data}
+          renderItem={(item, index) => (
+            <List.Item onClick={() => handleListItemClick(index)}
+              style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
+              {item}
+            </List.Item>
+          )}
+        />
+      </div>
+      {/* </Spin> */}
       <div style={{ width: '100%', height: '500px' }}>
         <div
           style={{
@@ -246,8 +245,8 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         </div>
 
       </div>
-
     </Flex>
+  </Spin>
 
 
   );
