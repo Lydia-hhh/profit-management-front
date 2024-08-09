@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Modal, Input, AutoComplete, Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { fuzzySearchList } from '../../store/features/portfolioSlice';
@@ -23,13 +23,25 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
 
+  const debounce = (fn: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    return (...args: any[]) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  };
+
   const handleSearch = async (typeIn: string) => {
     try {
       const action = await dispatch(fuzzySearchList({ typeIn }) as any);
       if (fuzzySearchList.fulfilled.match(action)) {
         const payload = action.payload as { data: SearchResultItem[] };
         setSearchResults(payload.data || []);
-        console.log("check fuzzy data: ",payload.data)
+        console.log("check fuzzy data: ", payload.data);
       } else {
         throw new Error('Failed to fetch search results');
       }
@@ -39,42 +51,52 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
     }
   };
 
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      if (value.trim() !== '') {
+        handleSearch(value);
+      }
+    }, 600),
+    []
+  );
+
   const handleSearchInput = (value: string) => {
     setSearchInput(value);
-    handleSearch(value);
+    debouncedSearch(value);
   };
 
   const handleSelect = (item_id: string) => {
-    setSearchInput(item_id); // Store selected value in searchInput
-    setSearchResults([]); 
+    setSearchInput(item_id);
+    setSearchResults([]);
   };
 
   const handleButtonClick = () => {
     if (searchInput.trim() !== '') {
-      setIsModalVisible(true); 
+      setIsModalVisible(true);
     } else {
       alert("Please select an item before proceeding.");
     }
   };
 
   const handleModalOk = (values: any) => {
-    setIsModalVisible(false); // close AddEntryModal
-    onAddSuccess(); 
-    onCancel(); // close SearchComponent modal
+    setIsModalVisible(false);
+    onAddSuccess();
+    onCancel();
   };
+
   return (
     <>
       <Modal title="Search" visible={visible} onCancel={onCancel} footer={null}>
         <div style={{ display: 'flex', marginBottom: 16 }}>
           <AutoComplete
             options={searchResults.map(item => ({
-              value: item.item_id, 
-              label: `${item.item_id} (${item.item_name})` 
+              value: item.item_id,
+              label: `${item.item_id} (${item.item_name})`
             }))}
             style={{ width: 300, marginRight: 8 }}
             onSearch={handleSearchInput}
             onSelect={handleSelect}
-            value={searchInput} 
+            value={searchInput}
             placeholder="Enter search term"
           >
             <Input />
@@ -92,8 +114,8 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onAdd={handleModalOk}
-        item_id={searchInput} // Pass searchInput as item_id
-        portfolio_id={selectedPortfolioId} 
+        item_id={searchInput}
+        portfolio_id={selectedPortfolioId}
         onAddSuccess={onAddSuccess}
       />
     </>
