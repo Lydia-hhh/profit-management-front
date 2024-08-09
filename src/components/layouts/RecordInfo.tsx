@@ -42,14 +42,14 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     "",
     '']
   const dispatch = useDispatch();
-  const [statisticalInfo, setStatisticalInfo] = useState<Statistical>();
+  // const [statisticalInfo, setStatisticalInfo] = useState<Statistical>();
   const [pieOption, setPieOption] = useState<any>(null);
   const chartRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
   const [infoLoading, setinfoLoading] = useState<boolean>(false);
   const [subtitle, setsubtitle] = useState<any>(subtitles[0]);
-  const [value, setValue] = useState<any>(190);
+  // const [value, setValue] = useState<any>(190);
   const statistical_info = useAppSelector(selectStatisticalInfo);
   const fetchRecords = () => {
     try {
@@ -58,7 +58,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         setinfoLoading(false)
         if (res && res.code == 200) {
           const info = res.data['statistical_info']
-          setStatisticalInfo(res.data['statistical_info']);
+          // setStatisticalInfo(res.data['statistical_info']);
           if (info) {
             setPieOption(getPieOption(info.category ? info.category : [], "Portfolio Breakdown", "The percentage of your portfolio that is invested in different asset types."));
             setSelectedItemIndex(0);
@@ -119,30 +119,63 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     let title;
     let subtitle;
     setsubtitle(subtitles[index]);
-    if (statisticalInfo) {
+    // if (statisticalInfo) {
+    //   switch (index) {
+    //     case 0:
+    //       data = statisticalInfo.category ? statisticalInfo.category : [];
+    //       title = "Portfolio Breakdowm";
+    //       subtitle = 'The percentage of your portfolio that is\ninvested in different asset types.';
+    //       break;
+    //     case 1:
+    //       data = statisticalInfo.marketCap ? statisticalInfo.marketCap : []
+    //       title = 'Market Cap';
+    //       subtitle = "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares. Small company: market cap below $2B. Medium company: market cap $2B - $10B. Large company: market cap above $10B.";
+    //       break;
+    //     case 2:
+    //       data = statisticalInfo.dividend_yields ? statisticalInfo.dividend_yields : [];
+    //       title = 'Dividend Yield';
+    //       subtitle = "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price. Low: ratio less than 1%. Medium: ratio 1%-3%. High: ratio greater than 3%."
+    //       break;
+    //     case 3:
+    //       data = statisticalInfo.trailingPE ? statisticalInfo.trailingPE : [];
+    //       title = 'P/E ratio';
+    //       subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.Low: ratio less than 10.Medium: ratio 10-20.High: ratio greater than 20."
+    //       break;
+    //     case 4:
+    //       data = statisticalInfo.sector ? statisticalInfo.sector : [];
+    //       title = 'Sector concentration';
+    //       subtitle = ""
+    //       break;
+    //     default:
+    //       data = [];
+    //       title = '';
+    //       subtitle = '';
+    //   }
+    // }
+    if (statistical_info) {
       switch (index) {
         case 0:
-          data = statisticalInfo.category ? statisticalInfo.category : [];
+          data = statistical_info.category ? statistical_info.category : [];
           title = "Portfolio Breakdowm";
           subtitle = 'The percentage of your portfolio that is\ninvested in different asset types.';
           break;
         case 1:
-          data = statisticalInfo.marketCap ? statisticalInfo.marketCap : []
+          data = statistical_info.marketCap ? statistical_info.marketCap : []
           title = 'Market Cap';
           subtitle = "A valuation method that multiplies the price of a company's stock by the total number of outstanding shares. Small company: market cap below $2B. Medium company: market cap $2B - $10B. Large company: market cap above $10B.";
           break;
         case 2:
-          data = statisticalInfo.dividend_yields ? statisticalInfo.dividend_yields : [];
+          data = statistical_info.dividend_yields ? statistical_info.dividend_yields : [];
           title = 'Dividend Yield';
           subtitle = "A ratio (dividend/price) that estimates how much a company will pay out in dividends each year compared to its stock price. Low: ratio less than 1%. Medium: ratio 1%-3%. High: ratio greater than 3%."
           break;
         case 3:
-          data = statisticalInfo.trailingPE ? statisticalInfo.trailingPE : [];
+          data = statistical_info.trailingPE ? statistical_info.trailingPE : [];
           title = 'P/E ratio';
           subtitle = "The ratio of current share price to trailing twelve month earnings per share (EPS) that signals if the price is high or low compared to other stocks.Low: ratio less than 10.Medium: ratio 10-20.High: ratio greater than 20."
           break;
         case 4:
-          data = statisticalInfo.sector ? statisticalInfo.sector : [];
+          data = statistical_info.sector ? statistical_info.sector : [];
           title = 'Sector concentration';
           subtitle = ""
           break;
@@ -156,23 +189,46 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchRecords();
-  }, [portfolio_id]);
+  // useEffect(() => {
+  //   fetchRecords();
+  // }, [portfolio_id]);
+
+  // useEffect(()=>{
+
+  // },[statistical_info])
 
   useEffect(() => {
-    if (chartRef.current && pieOption) {
+    if (chartRef.current) {
       const chartInstance = echarts.init(chartRef.current);
-      chartInstance.setOption(pieOption);
-      const handleResize = () => chartInstance.resize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      let option=null;
+      if(pieOption===null){
+        console.log("render pieOption: ",statistical_info.list_data);
+          option=getPieOption(statistical_info.category ? statistical_info.category : [], "Portfolio Breakdown", "The percentage of your portfolio that is invested in different asset types.");
+          setSelectedItemIndex(0);
+      }else{
+        option=pieOption;
+      }
+    chartInstance.setOption(option);
+    const handleResize = () => chartInstance.resize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
     }
-  }, [pieOption]);
+    // if (chartRef.current && pieOption) {
+    //   const chartInstance = echarts.init(chartRef.current);
+    //   chartInstance.setOption(pieOption);
+    //   const handleResize = () => chartInstance.resize();
+    //   window.addEventListener('resize', handleResize);
+    //   return () => window.removeEventListener('resize', handleResize);
+    // }
+  }, [pieOption, statistical_info]);
 
-  if (!statisticalInfo) {
+  // if (!statisticalInfo) {
+  //   return null;
+  // }
+  if (!statistical_info) {
     return null;
   }
+
 
   return (<Spin style={{ width: '100%', height: '300px' }} indicator={<LoadingOutlined spin />} spinning={infoLoading}>
     <Flex style={{ width: '100%', height: '900px' }} vertical justify='space-between'>
@@ -212,7 +268,8 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
       <div style={{}}>
         <List
           bordered
-          dataSource={statisticalInfo.list_data}
+          // dataSource={statisticalInfo.list_data}
+          dataSource={statistical_info.list_data}
           renderItem={(item, index) => (
             <List.Item onClick={() => handleListItemClick(index)}
               style={{ backgroundColor: index === selectedItemIndex ? '#e6f7ff' : 'transparent' }}>
@@ -238,9 +295,11 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         <div style={{ wordWrap: 'break-word' }}>
           {subtitle.split('\n').map((line: any, index: any) => (
             <React.Fragment key={index}>
-              {line}
+              {index === selectedItemIndex ? line : ''}
               <br />
             </React.Fragment>
+
+
           ))}
         </div>
 

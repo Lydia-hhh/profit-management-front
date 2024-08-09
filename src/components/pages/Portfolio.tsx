@@ -2,7 +2,7 @@ import { Button, Dropdown, Empty, Flex, Form, FormProps, Input, Layout, Menu, Me
 import DiagramAll from "../layouts/DiagramAll";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, UseDispatch } from "react-redux";
-import { change_selected_list, portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem, selectDelete, selectStatisticalInfo, set_records, set_statistical_info } from "../../store/features/portfolioSlice";
+import { change_selected_list, delete_record, portfolioDelete, portfolioList, portfolioPost, recordList, selectActiveKey, selectAddItem, selectDelete, selectStatisticalInfo, set_active_key, set_records, set_statistical_info } from "../../store/features/portfolioSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import DiagramProfit from "../layouts/DiagramProfit";
 import PieChart from "../layouts/PieChart";
@@ -36,6 +36,7 @@ function Portfolio() {
     const { TabPane } = Tabs;
     const add_item = useAppSelector(selectAddItem);
     const deleted = useAppSelector(selectDelete);
+    const [tabloading, setTabloading] = useState<boolean>(false);
     const active_key = useAppSelector(selectActiveKey);
     const statistical_info = useAppSelector(selectStatisticalInfo);
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,12 +46,12 @@ function Portfolio() {
         { key: '2', label: 'Portfolio' },
         { key: '3', label: 'Search' }
     ]
-    const navigateToDest=(key:any)=>{
-        if(key=='1'){
+    const navigateToDest = (key: any) => {
+        if (key == '1') {
             navigate('/');
-        }else if(key=='2'){
+        } else if (key == '2') {
             navigate('/portfolio');
-        }else if(key=='3'){
+        } else if (key == '3') {
             navigate('/search');
         }
     }
@@ -78,10 +79,13 @@ function Portfolio() {
     };
 
 
-    const onChange = (key: string) => {
+    const onChange = async (key: string) => {
         setportfolioId(key)
+        // sliceDispatch(set_active_key(key))
+        setTabloading(true);
+        await fetchRecords(key);
         setActiveKey(key as any);
-        fetchRecords(key);
+        setTabloading(false);
     };
     const onChangeRecord = (key: string) => {
     };
@@ -107,7 +111,7 @@ function Portfolio() {
                 has_record: flag
             };
         }));
-        if (active === null && result.length > 0) {
+        if (active === undefined && result.length > 0) {
             setportfolioId(result[0].portfolio_id);
             await fetchRecords(result[0].portfolio_id);
         } else {
@@ -122,7 +126,7 @@ function Portfolio() {
                 children: getTabNode(item.has_record, item.portfolio_id)
             };
         });
-        if (active === null && _items.length > 0) {
+        if (active === undefined && _items.length > 0) {
             setActiveKey(_items[0].key);
         } else {
             setActiveKey(active);
@@ -251,13 +255,33 @@ function Portfolio() {
     const handleDeleteCancel = () => {
         setDeleteopen(false);
     }
-    const handleDeleteOk = (portfolio_id: any) => {
+    const handleDeleteOk = async (portfolio_id: any) => {
         setConfirmLoading(false);
-        dispatch(portfolioDelete({ portfolio_id }) as any).then(unwrapResult).then((res: any) => {
+        dispatch(portfolioDelete({ portfolio_id }) as any).then(unwrapResult).then(async (res: any) => {
+            setConfirmLoading(false);
+            setDeleteopen(false);
             if (res && res.code == 200) {
-                getItems(null);
-                setDeleteopen(false);
-                setConfirmLoading(false);
+                message.success("Portfolio deleted successfully. It is loading, please wait.")
+                // getItems(undefined);
+                // const updatedTapItems=tapitems===undefined?[]:tapitems;
+
+                // for(let i=0;i<updatedTapItems.length;i++){
+                //     if(updatedTapItems[i].portfolio_id===portfolio_id){
+                //         updatedTapItems.splice(i,1);
+                //     }
+                // }
+                const updatedTapItems: any[] | undefined = tapitems?.filter(item => item.key !== portfolio_id);
+                // console.log("updatedTapItems: ",updatedTapItems);
+                settapItems(updatedTapItems);
+                if (updatedTapItems !== undefined && updatedTapItems.length > 0) {
+                    setTabloading(true);
+                    await fetchRecords(updatedTapItems[0].key);
+                    setActiveKey(updatedTapItems[0].key);
+                    setTabloading(false);
+                    // sliceDispatch(delete_record());
+                }
+            } else {
+                message.error("Portfolio delete failed.")
             }
         })
     }
@@ -266,21 +290,27 @@ function Portfolio() {
         setConfirmLoading(true);
         const portfolio_name = values.portfolio_name;
         dispatch(portfolioPost({ portfolio_name }) as any).then(unwrapResult).then(async (res: any) => {
-            setOpen(false);
             setConfirmLoading(false);
+            setOpen(false);
             if (res && res.code == 200) {
+                message.success("Portfolio created successfully. It is loading, please wait.")
                 const portfolio_id = res.data?.portfolio_id;
-                setActiveKey(portfolio_id);
-                await getItems(portfolio_id);
+                handleAddPortfolioSuccess(portfolio_id, portfolio_name);
+                // setActiveKey(portfolio_id);
+                // sliceDispatch(set_active_key(portfolio_id))
+                // await getItems(portfolio_id);
 
                 // if (_items.length > 0) {
                 //     setActiveKey(_items[_items.length - 1].key)
                 // }
 
+            } else {
+                message.error("Portfolio create failed.")
             }
         })
     };
     const fetchRecords = async (portfolio_id: any) => {
+        console.log("fetch ", portfolio_id);
         try {
             const res: any = await dispatch(recordList({ portfolio_id }) as any).then(unwrapResult);
             if (res && res.code == 200) {
@@ -294,12 +324,44 @@ function Portfolio() {
     const onFinishFailed = (errorInfo: any) => {
     };
     useEffect(() => {
-        getItems(null);
-    }, [])
-    useEffect(() => {
-        setActiveKey(active_key)
-        getItems(active_key);
+        // getItems(activeKey);
+        if (activeKey === undefined) {
+            getItems(activeKey);
+        } else {
+            fetchRecords(activeKey);
+        }
     }, [add_item, deleted])
+    const handleAddItemSuccess = async (portfolio_id: any) => {
+        const taps = (tapitems === undefined) ? [] : [...tapitems];
+        let index = taps?.findIndex(item => item.key === portfolio_id);
+        index = (index === undefined) ? -1 : index;
+        if (index !== -1) {
+            taps[index].children = getTabNode(true, portfolio_id)
+            console.log("handleAddItemSuccess", taps);
+            settapItems(taps);
+            setTabloading(true);
+            await fetchRecords(portfolio_id);
+            setActiveKey(portfolio_id);
+            setTabloading(false);
+
+        }
+    }
+    const handleAddPortfolioSuccess = async (portfolio_id: any, portfolio_name: any) => {
+        const taps = tapitems === undefined ? [] : [...tapitems];
+        taps.push({
+            key: portfolio_id,
+            label: portfolio_name,
+            closable: false,
+            children: getTabNode(false, portfolio_id)
+        })
+        console.log("handleAddPortfolioSuccess",taps);
+        settapItems(taps);
+        setTabloading(true);
+        await fetchRecords(portfolio_id);
+        setActiveKey(portfolio_id);
+        setTabloading(false);
+    }
+
     return (
         <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
             <Layout>
@@ -329,7 +391,9 @@ function Portfolio() {
                         }}
                     >
                         <div style={{ width: '100%' }}>
-                            <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
+                            <Spin indicator={<LoadingOutlined spin />} spinning={tabloading}>
+                                <Tabs type="editable-card" items={tapitems} onChange={onChange} activeKey={activeKey} onEdit={onEdit} />
+                            </Spin>
                             <Modal
                                 title="Create a New Investment Portfolio"
                                 open={open}
@@ -374,7 +438,7 @@ function Portfolio() {
                                 onCancel={handleSearchCancel}
                                 onSelect={handleSearchSelect}
                                 selectedPortfolioId={portfolioId}
-                                onAddSuccess={() => { fetchRecords(portfolioId) }}
+                                onAddSuccess={() => { handleAddItemSuccess(portfolioId) }}
                             />
 
                             <AddEntryModal
@@ -383,7 +447,7 @@ function Portfolio() {
                                 onAdd={handleAddRecord}
                                 item_id={selectedItemId}
                                 portfolio_id={portfolioId}
-                                onAddSuccess={() => { fetchRecords(portfolioId) }}
+                                onAddSuccess={() => { handleAddItemSuccess(portfolioId) }}
                             />
                         </div>
                     </div>

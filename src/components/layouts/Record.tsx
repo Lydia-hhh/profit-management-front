@@ -116,7 +116,7 @@ function Record({ portfolio_id }: any) {
         try {
             dispatch(productDelete({ portfolio_id, item_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
-                    message.success('Record deleted successfully');
+                    message.success('Record deleted successfully. It is loading, please wait.');
                     handleRecordDeleteSuccess();
                     // fetchRecords();
                 }
@@ -130,7 +130,7 @@ function Record({ portfolio_id }: any) {
         try {
             dispatch(recordDelete({ record_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
-                    message.success('Record deleted successfully');
+                    message.success('Record deleted successfully. It is loading, please wait.');
                     // fetchRecords();
                     handleRecordDeleteSuccess();
                 }
@@ -338,6 +338,7 @@ function Record({ portfolio_id }: any) {
                     onCancel={handleSearchCancel}
                     onSelect={handleSearchSelect}
                     selectedPortfolioId={portfolio_id}
+                    // onAddSuccess={()=>{sliceDispatch(change_add_item())}}
                     onAddSuccess={()=>{}}
                 />
                 <Table
@@ -355,7 +356,7 @@ function Record({ portfolio_id }: any) {
                     onAdd={handleAddRecord}
                     item_id={selectedItemId}
                     portfolio_id={portfolio_id}
-                    onAddSuccess={()=>{}}
+                    onAddSuccess={()=>{sliceDispatch(change_add_item())}}
                 />
             </Spin>
 

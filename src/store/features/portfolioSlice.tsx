@@ -12,7 +12,13 @@ const initialState = {
         total_return: "0",
         total_return_rate: "0",
         daily_return: "0",
-        daily_return_rate: "0"
+        daily_return_rate: "0",
+        category:[],
+        dividend_yields:[],
+        list_data:[],
+        marketCap:[],
+        sector:[],
+        trailingPE:[]
 
     }
 };
