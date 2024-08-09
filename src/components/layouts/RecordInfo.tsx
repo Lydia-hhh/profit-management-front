@@ -295,7 +295,7 @@ const RecordInfo: React.FC<{ portfolio_id: string }> = ({ portfolio_id }) => {
         <div style={{ wordWrap: 'break-word' }}>
           {subtitle.split('\n').map((line: any, index: any) => (
             <React.Fragment key={index}>
-              {index === selectedItemIndex ? line : ''}
+              {line}
               <br />
             </React.Fragment>
 
