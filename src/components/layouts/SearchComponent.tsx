@@ -14,6 +14,7 @@ interface SearchComponentProps {
 
 interface SearchResultItem {
   item_id: string;
+  item_name: string;
 }
 
 const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, onSelect, selectedPortfolioId, onAddSuccess }) => {
@@ -28,6 +29,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
       if (fuzzySearchList.fulfilled.match(action)) {
         const payload = action.payload as { data: SearchResultItem[] };
         setSearchResults(payload.data || []);
+        console.log("check fuzzy data: ",payload.data)
       } else {
         throw new Error('Failed to fetch search results');
       }
@@ -61,17 +63,19 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
     onAddSuccess(); 
     onCancel(); // close SearchComponent modal
   };
-
   return (
     <>
       <Modal title="Search" visible={visible} onCancel={onCancel} footer={null}>
         <div style={{ display: 'flex', marginBottom: 16 }}>
           <AutoComplete
-            options={searchResults.map(item => ({ value: item.item_id }))}
+            options={searchResults.map(item => ({
+              value: item.item_id, 
+              label: `${item.item_id} (${item.item_name})` 
+            }))}
             style={{ width: 300, marginRight: 8 }}
             onSearch={handleSearchInput}
             onSelect={handleSelect}
-            value={searchInput} // Bind value to searchInput state
+            value={searchInput} 
             placeholder="Enter search term"
           >
             <Input />
