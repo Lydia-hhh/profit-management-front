@@ -46,36 +46,7 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const sliceDispatch=useAppDispatch();
   useEffect(() => {
-    if(item_id === 'MS')
-    {
-      setItemName('Morgan Stanley');
-      setItemType('EQUITY');
-      setCurrency('USD');
-      setCurrencyPrice(94.63);
-      setCurrencyRate(0.74);
-    }else if(item_id === '^GSPC'){
-      setItemName('S&P 500');
-      setItemType('INDEX');
-      setCurrency('USD');
-      setCurrencyPrice(5318.59);
-      setCurrencyRate(2.29);
-    }else if(item_id==='BTC-USD')
-    {
-      setItemName('Bitcoin');
-      setItemType('Bitcoin');
-      setCurrency('USD');
-      setCurrencyPrice(60923.53);
-      setCurrencyRate(-1.27);
-    }
-    else if(item_id==='601857.SS')
-    {
-      setItemName('PETROCHINA CO');
-      setItemType('EQUITY');
-      setCurrency('CNY');
-      setCurrencyPrice(8.74);
-      setCurrencyRate(1.87);
-    }
-    else if (item_id) {
+    if (item_id) {
       dispatch(productsInfo({ item_id }) as any)
         .then((action: any) => {
           if (productsInfo.fulfilled.match(action)) {
@@ -96,35 +67,6 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
 
   useEffect(() => {
     const date = selectedDate;
-    if(item_id === 'MS')
-    {
-      setItemName('Morgan Stanley');
-      setItemType('EQUITY');
-      setCurrency('USD');
-      setCurrencyPrice(94.63);
-      setCurrencyRate(0.74);
-    }else if(item_id === '^GSPC'){
-      setItemName('S&P 500');
-      setItemType('INDEX');
-      setCurrency('USD');
-      setCurrencyPrice(5318.59);
-      setCurrencyRate(2.29);
-    }else if(item_id==='BTC-USD')
-    {
-      setItemName('Bitcoin');
-      setItemType('Bitcoin');
-      setCurrency('USD');
-      setCurrencyPrice(60923.53);
-      setCurrencyRate(-1.27);
-    }
-    else if(item_id==='601857.SS')
-    {
-      setItemName('PETROCHINA CO');
-      setItemType('EQUITY');
-      setCurrency('CNY');
-      setCurrencyPrice(8.74);
-      setCurrencyRate(1.87);
-    }
     if (date && item_id) {
       const buy_date = date.format('YYYY-MM-DD');
       dispatch(getProductHistoryPrice({ item_id, buy_date }) as any)
