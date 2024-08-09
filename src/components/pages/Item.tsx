@@ -86,7 +86,6 @@ function Item() {
                 })
                 .catch((err: any) => {
                     console.error("Server error:", err);
-                    alert("Server error, please contact developer");
                 });
         }
     }, [item_id, dispatch]);

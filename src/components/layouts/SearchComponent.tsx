@@ -35,7 +35,6 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ visible, onCancel, on
       }
     } catch (err: any) {
       console.error("Error fetching search results:", err);
-      alert("Server error, please contact developer");
       setSearchResults([]);
     }
   };

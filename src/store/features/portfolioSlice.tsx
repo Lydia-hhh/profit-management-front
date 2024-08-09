@@ -22,7 +22,6 @@ export const diagramAll = createAsyncThunk("portfolio/diagramAll", async (userIn
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const diagramSingle = createAsyncThunk("portfolio/diagramSingle", async (userInput: any) => {
@@ -31,7 +30,6 @@ export const diagramSingle = createAsyncThunk("portfolio/diagramSingle", async (
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const diagramProfit = createAsyncThunk("portfolio/diagramProfit", async (userInput: any) => {
@@ -40,7 +38,6 @@ export const diagramProfit = createAsyncThunk("portfolio/diagramProfit", async (
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 export const diagramDistribution = createAsyncThunk("portfolio/diagramDistribution", async (userInput: any) => {
@@ -49,7 +46,6 @@ export const diagramDistribution = createAsyncThunk("portfolio/diagramDistributi
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 export const portfolioList = createAsyncThunk("portfolio/portfolioList", async () => {
@@ -58,7 +54,6 @@ export const portfolioList = createAsyncThunk("portfolio/portfolioList", async (
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 export const portfolioPost = createAsyncThunk("portfolio/portfolioPost", async (userInput: any) => {
@@ -67,7 +62,6 @@ export const portfolioPost = createAsyncThunk("portfolio/portfolioPost", async (
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const portfolioDelete = createAsyncThunk("portfolio/portfolioDelete", async (userInput: any) => {
@@ -76,7 +70,6 @@ export const portfolioDelete = createAsyncThunk("portfolio/portfolioDelete", asy
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 export const portfolioNews = createAsyncThunk("portfolio/news", async (userInput: any) => {
@@ -85,7 +78,6 @@ export const portfolioNews = createAsyncThunk("portfolio/news", async (userInput
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const productNews = createAsyncThunk("products/news", async (userInput: any) => {
@@ -94,7 +86,6 @@ export const productNews = createAsyncThunk("products/news", async (userInput: a
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const recordList = createAsyncThunk("portfolio/recordList", async (userInput: any) => {
@@ -103,7 +94,6 @@ export const recordList = createAsyncThunk("portfolio/recordList", async (userIn
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 /*fuzzy search*/
@@ -115,7 +105,6 @@ export const fuzzySearchList = createAsyncThunk("portfolio/fuzzySearchList",
             return res;
         } catch (err: any) {
             console.log(err);
-            alert("server error, please contact developer")
         }
     })
 export const recordDelete = createAsyncThunk("portfolio/recordDelete", async (userInput: any) => {
@@ -124,7 +113,6 @@ export const recordDelete = createAsyncThunk("portfolio/recordDelete", async (us
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 /*get Info*/
@@ -135,7 +123,6 @@ export const productsInfo = createAsyncThunk("portfolio/productsInfo",
             return res;
         } catch (err: any) {
             console.log(err);
-            alert("server error, please contact developer")
         }
     })
 export const productDelete = createAsyncThunk("portfolio/productDelete", async (userInput: any) => {
@@ -144,7 +131,6 @@ export const productDelete = createAsyncThunk("portfolio/productDelete", async (
         return res
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer")
     }
 })
 
@@ -156,7 +142,6 @@ export const addProduct = createAsyncThunk("portfolio/addProduct",
             return res;
         } catch (err: any) {
             console.log(err);
-            alert("server error, please contact developer")
         }
     })
 export const activity = createAsyncThunk("activity", async (userInput: any) => {
@@ -165,7 +150,6 @@ export const activity = createAsyncThunk("activity", async (userInput: any) => {
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const klineData = createAsyncThunk("portfolio/klineData", async (userInput: any) => {
@@ -174,7 +158,6 @@ export const klineData = createAsyncThunk("portfolio/klineData", async (userInpu
         return res;
     } catch (err: any) {
         console.log(err);
-        alert("server error, please contact developer");
     }
 })
 export const getProductHistoryPrice = createAsyncThunk("portfolio/getProductHistoryPrice", async (userInput: any) => {
@@ -183,7 +166,6 @@ export const getProductHistoryPrice = createAsyncThunk("portfolio/getProductHist
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 export const getProductDetail = createAsyncThunk("portfolio/getProductDetail", async (userInput: any) => {
@@ -192,7 +174,6 @@ export const getProductDetail = createAsyncThunk("portfolio/getProductDetail", a
         return res;
     } catch (err: any) {
         console.log(err)
-        alert("server error, please contact developer")
     }
 })
 function arraysEqual<T>(arr1: T[], arr2: T[]): boolean {
