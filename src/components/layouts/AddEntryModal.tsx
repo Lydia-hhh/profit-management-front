@@ -5,6 +5,7 @@ import { change_add_item, productsInfo, set_active_key } from '../../store/featu
 import { addProduct, getProductHistoryPrice } from "../../store/features/portfolioSlice"
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch } from '../../store/hooks';
+import item from "../pages/Item";
 
 const { Item: FormItem } = Form;
 
@@ -14,7 +15,7 @@ interface AddEntryModalProps {
   onAdd: (values: any) => void;
   item_id: string | null;
   portfolio_id: string | null;
-  onAddSuccess: () => void; 
+  onAddSuccess: () => void;
 }
 interface ProductInfoResponse {
   data: {
@@ -45,7 +46,24 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const sliceDispatch=useAppDispatch();
   useEffect(() => {
-    if (item_id) {
+    if(item_id === 'MS')
+    {
+      setCurrencyPrice(94.63);
+      setCurrencyRate(0.74);
+    }else if(item_id === '^GSPC'){
+      setCurrencyPrice(5318.59);
+      setCurrencyRate(2.29);
+    }else if(item_id==='BTC-USD')
+    {
+      setCurrencyPrice(60923.53);
+      setCurrencyRate(-1.27);
+    }
+    else if(item_id==='601857.SS')
+    {
+      setCurrencyPrice(8.74);
+      setCurrencyRate(1.87);
+    }
+    else if (item_id) {
       dispatch(productsInfo({ item_id }) as any)
         .then((action: any) => {
           if (productsInfo.fulfilled.match(action)) {
@@ -66,7 +84,24 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
 
   useEffect(() => {
     const date = selectedDate;
-    if (date && item_id) {
+    if(item_id === 'MS')
+    {
+      setCurrencyPrice(94.63);
+      setCurrencyRate(0.74);
+    }else if(item_id === '^GSPC'){
+      setCurrencyPrice(5318.59);
+      setCurrencyRate(2.29);
+    }else if(item_id==='BTC-USD')
+    {
+      setCurrencyPrice(60923.53);
+      setCurrencyRate(-1.27);
+    }
+    else if(item_id==='601857.SS')
+    {
+      setCurrencyPrice(8.74);
+      setCurrencyRate(1.87);
+    }
+    else if (date && item_id) {
       const buy_date = date.format('YYYY-MM-DD');
       dispatch(getProductHistoryPrice({ item_id, buy_date }) as any)
         .then((action: any) => {
@@ -103,7 +138,7 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
       .then(() => {
         message.success('Product added successfully.');
         form.resetFields();
-        onCancel(); 
+        onCancel();
         onAddSuccess();
       })
       .catch(() => message.error('Failed to add product'));
@@ -156,27 +191,27 @@ return (
         </Col>
         <Col span={8}>
           <FormItem label="Current Price">
-            <Input 
-              value={current_price != null ? `${getCurrencySymbol(currency)}${current_price}` : getCurrencySymbol(currency)} 
-              readOnly 
-              disabled={current_price == null} 
-              style={{ 
-                color: current_price == null ? 'grey' : 'black', 
-                cursor: current_price == null ? 'not-allowed' : 'default' 
-              }} 
+            <Input
+              value={current_price != null ? `${getCurrencySymbol(currency)}${current_price}` : getCurrencySymbol(currency)}
+              readOnly
+              disabled={current_price == null}
+              style={{
+                color: current_price == null ? 'grey' : 'black',
+                cursor: current_price == null ? 'not-allowed' : 'default'
+              }}
             />
           </FormItem>
         </Col>
         <Col span={8}>
         <FormItem label="Current Rate">
-          <Input 
-            value={current_rate != null ? formatRate(current_rate) : ''} 
-            readOnly 
-            disabled={current_rate == null} 
-            style={{ 
-              color: current_rate == null ? 'grey' : (current_rate < 0 ? 'red' : 'green'), 
-              cursor: current_rate == null ? 'not-allowed' : 'default' 
-            }} 
+          <Input
+            value={current_rate != null ? formatRate(current_rate) : ''}
+            readOnly
+            disabled={current_rate == null}
+            style={{
+              color: current_rate == null ? 'grey' : (current_rate < 0 ? 'red' : 'green'),
+              cursor: current_rate == null ? 'not-allowed' : 'default'
+            }}
           />
         </FormItem>
       </Col>
