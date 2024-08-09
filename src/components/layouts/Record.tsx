@@ -338,8 +338,8 @@ function Record({ portfolio_id }: any) {
                     onCancel={handleSearchCancel}
                     onSelect={handleSearchSelect}
                     selectedPortfolioId={portfolio_id}
-                    // onAddSuccess={()=>{sliceDispatch(change_add_item())}}
-                    onAddSuccess={()=>{}}
+                    onAddSuccess={()=>{sliceDispatch(change_add_item())}}
+                    // onAddSuccess={()=>{}}
                 />
                 <Table
                     columns={columns}
