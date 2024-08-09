@@ -293,7 +293,7 @@ function Portfolio() {
             setConfirmLoading(false);
             setOpen(false);
             if (res && res.code == 200) {
-                message.success("Portfolio created successfully. It is loading, please wait.")
+                message.success("Portfolio created successfully.")
                 const portfolio_id = res.data?.portfolio_id;
                 handleAddPortfolioSuccess(portfolio_id, portfolio_name);
                 // setActiveKey(portfolio_id);

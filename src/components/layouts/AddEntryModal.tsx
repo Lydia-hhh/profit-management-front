@@ -101,7 +101,7 @@ const AddEntryModal: React.FC<AddEntryModalProps> = ({ visible, onCancel, onAdd,
         currency
       }) as any)
       .then(() => {
-        message.success('Product added successfully. It is loading, please wait.');
+        message.success('Product added successfully.');
         form.resetFields();
         onCancel(); 
         onAddSuccess();

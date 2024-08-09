@@ -116,7 +116,7 @@ function Record({ portfolio_id }: any) {
         try {
             dispatch(productDelete({ portfolio_id, item_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
-                    message.success('Record deleted successfully. It is loading, please wait.');
+                    message.success('Record deleted successfully.');
                     handleRecordDeleteSuccess();
                     // fetchRecords();
                 }
@@ -130,7 +130,7 @@ function Record({ portfolio_id }: any) {
         try {
             dispatch(recordDelete({ record_id }) as any).then(unwrapResult).then((res: any) => {
                 if (res && res.code == 200) {
-                    message.success('Record deleted successfully. It is loading, please wait.');
+                    message.success('Record deleted successfully.');
                     // fetchRecords();
                     handleRecordDeleteSuccess();
                 }
